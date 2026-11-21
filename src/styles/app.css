@@ -5459,3 +5459,22 @@ h3:not(.eyebrow) {
   vertical-align: -2px;
   margin-right: 4px;
 }
+.wt-field .wt-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+.wt-field .wt-check input,
+.wt-field .wt-row .wt-check input {
+  flex: none;
+  width: auto;
+  padding: 0;
+  accent-color: var(--terra);
+}
+.wt-quota {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}

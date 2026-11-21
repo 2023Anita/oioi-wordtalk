@@ -24,7 +24,7 @@
 | 💬 **边学边聊 Chat** | 和 Dr. Anita 角色扮演；任务词以卡片显示；模型用 JSON 判定你是否**用对**了目标词 → 点亮星星并记一次 FSRS 复习；每轮给出正误与更自然的说法；支持 Web Speech 语音输入、词库真人发音 |
 | 🧠 **逻辑训练 Logic** | 词网（近反义、搭配、词族 + AI 扩展）、雅思大作文论证链（论点→理由→证据→让步→结论，逐步打分）、辩论模式（指出逻辑漏洞）、易混词辨析（用词库 tip） |
 | 🔁 **FSRS 扩展** | 复习记录带来源：卡片 / 场景测验 / 对话使用 / 论证；同一词同一来源每天只计一次 |
-| 🔑 **自带模型 BYOK** | MiniMax（中国站 / Global）、DeepSeek、通义千问（DashScope 兼容模式）、OpenAI、任意 OpenAI 兼容地址；Key 只存在本机；生成内容缓存在 IndexedDB；无 Key 时有**离线演示模式** |
+| 🔑 **自带模型 BYOK** | MiniMax（中国站 / Global）、DeepSeek、通义千问（DashScope 兼容模式）、**OpenRouter（含免费模型）**、OpenAI、任意 OpenAI 兼容地址；Key 只存在本机；生成内容缓存在 IndexedDB；无 Key 时有**离线演示模式** |
 
 没有账号、没有服务器、没有统计追踪。详见 [隐私政策](https://2023anita.github.io/oioi-wordtalk/#/privacy)。
 
@@ -41,7 +41,16 @@ npm run build:check    # 快速构建（不复制 640 MB 媒体）
 
 打开 App → 右上角 <kbd>CPU</kbd> 图标「模型设置」→ 选服务商、粘贴你自己的 API Key → 测试连接。
 
-> 2026-11-22 检查过：MiniMax、DeepSeek、DashScope、OpenAI 都允许浏览器跨域直连。如果你的网络拦截了直连，可自行部署 [`proxy/`](proxy/) 里的 Cloudflare Worker（可选，未部署）。
+> 2026-11-22 检查过：MiniMax、DeepSeek、DashScope、OpenRouter、OpenAI 都允许浏览器跨域直连。如果你的网络拦截了直连，可自行部署 [`proxy/`](proxy/) 里的 Cloudflare Worker（可选，未部署）。
+
+### 免费用：OpenRouter
+
+没有付费 Key 也能用真模型：在 [openrouter.ai/keys](https://openrouter.ai/keys) 免费注册拿一个 Key，服务商选「OpenRouter（含免费模型）」。
+
+- 默认模型 `openrouter/free`（自动挑一个可用的免费模型）；模型列表实时读取 OpenRouter，默认「只看免费」，也可以直接输入任意模型 ID。
+- 免费模型有每分钟和每天的次数上限（从未充值的账户约 50 次/天，充值过 ≥10 美元约 1000 次/天）。「测试连接」成功后会显示今天已用 / 上限。遇到限流（429）会自动改用 `openrouter/free` 重试一次，仍失败时给出中文提示。
+- 生成的故事、词网和辨析题会缓存在本机，重复打开不再消耗次数。
+- 隐私：内容会发给 OpenRouter 及其背后的模型提供方。**部分免费模型的提供方可能记录输入用于训练，请勿输入隐私信息。**
 
 ## 部署
 
@@ -68,7 +77,9 @@ fastlane/        iOS 签名与 TestFlight 上传
 - 字体 Fraunces（SIL OFL 1.1）。配色参考 [OiOi MedAI Academy](https://oioi-academy.com)。
 - 本项目是独立作品，**与原作者及官方「词光」App 无关，也不代表其认可或背书**；不是官方雅思产品。
 
-English: OiOi WordTalk is built on the open-source Word Atlas (词光) by designfuchen. Code is MIT (original copyright notice retained). Dataset, illustrations and word audio are © Word Atlas contributors under CC BY 4.0 and have been modified and extended here. Not affiliated with or endorsed by the original author.
+English: Bring your own key for MiniMax, DeepSeek, Qwen (DashScope), **OpenRouter (incl. free models)**, OpenAI or any OpenAI-compatible endpoint. With OpenRouter you can start free: get a key at https://openrouter.ai/keys, keep the default `openrouter/free` or pick any `:free` model from the live list. Free models have per-minute and per-day request caps (about 50/day for accounts that never bought credits, about 1,000/day after buying ≥ $10); the app shows today's usage after "Test connection" and retries a rate-limited request once on `openrouter/free`. Text goes to OpenRouter and the underlying provider; some free-model providers may log prompts for training, so do not enter private information.
+
+OiOi WordTalk is built on the open-source Word Atlas (词光) by designfuchen. Code is MIT (original copyright notice retained). Dataset, illustrations and word audio are © Word Atlas contributors under CC BY 4.0 and have been modified and extended here. Not affiliated with or endorsed by the original author.
 
 ## License
 

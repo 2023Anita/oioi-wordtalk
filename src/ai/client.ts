@@ -1,5 +1,6 @@
 import type { AiConfig } from "./config";
 import { extractJson } from "./json";
+import { modelInfo, modelSupportsJson, OR_FREE_ROUTER, orHeaders, rateLimitMessage } from "./openrouter";
 import { presetById } from "./providers";
 
 export interface Message {
@@ -61,13 +62,43 @@ const MINIMAX_CODES: Record<number, string> = {
 
 const TIMEOUT_MS = 60_000;
 
+export const isOpenRouter = (cfg: AiConfig) => cfg.provider === "openrouter";
+
+/** Request body for one completion. OpenRouter: JSON mode only when the model supports it. */
+export function buildBody(cfg: AiConfig, messages: Message[], { json = false, maxTokens = 1600 }: { json?: boolean; maxTokens?: number } = {}) {
+  const body: Record<string, unknown> = { model: cfg.model, messages, temperature: cfg.temperature, max_tokens: maxTokens };
+  if (isOpenRouter(cfg)) {
+    if (json && modelSupportsJson(cfg.model)) body.response_format = { type: "json_object" };
+    // Keep thinking short and out of the reply so it does not eat the token budget.
+    if (modelInfo(cfg.model)?.reasoning) body.reasoning = { effort: "low", exclude: true };
+  } else if (json && presetById(cfg.provider).jsonMode) body.response_format = { type: "json_object" };
+  return body;
+}
+
 /** One OpenAI-compatible chat completion. */
-export async function chat(cfg: AiConfig, messages: Message[], { json = false, signal, maxTokens = 1600 }: { json?: boolean; signal?: AbortSignal; maxTokens?: number } = {}) {
+export async function chat(cfg: AiConfig, messages: Message[], opts: { json?: boolean; signal?: AbortSignal; maxTokens?: number } = {}): Promise<string> {
+  try {
+    return await chatOnce(cfg, messages, opts);
+  } catch (e) {
+    // OpenRouter: a rate-limited or unavailable model gets one automatic retry on the free router.
+    if (e instanceof AiError && isOpenRouter(cfg) && cfg.model !== OR_FREE_ROUTER && (e.status === 429 || e.status === 503)) {
+      try {
+        return await chatOnce({ ...cfg, model: OR_FREE_ROUTER }, messages, opts);
+      } catch (e2) {
+        if (e2 instanceof AiError && e2.status === 429) throw e; // daily cap: keep the original explanation
+        throw e2;
+      }
+    }
+    throw e;
+  }
+}
+
+async function chatOnce(cfg: AiConfig, messages: Message[], { json = false, signal, maxTokens = 1600 }: { json?: boolean; signal?: AbortSignal; maxTokens?: number } = {}) {
   if (!cfg.apiKey) throw new AiError("还没有填写 API Key，请先到「模型设置」里填写。");
   if (!/^https:\/\//.test(cfg.baseUrl)) throw new AiError("Base URL 需要以 https:// 开头，请到「模型设置」里核对。");
   const { url, headers } = endpoint(cfg);
-  const body: Record<string, unknown> = { model: cfg.model, messages, temperature: cfg.temperature, max_tokens: maxTokens };
-  if (json && presetById(cfg.provider).jsonMode) body.response_format = { type: "json_object" };
+  const body = buildBody(cfg, messages, { json, maxTokens });
+  const extra = isOpenRouter(cfg) ? orHeaders() : {};
   // Our own timeout, chained to the caller's abort signal.
   const ctl = new AbortController();
   let timedOut = false;
@@ -79,7 +110,7 @@ export async function chat(cfg: AiConfig, messages: Message[], { json = false, s
   signal?.addEventListener("abort", onAbort, { once: true });
   let res: Response;
   try {
-    res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${cfg.apiKey}`, ...headers }, body: JSON.stringify(body), signal: ctl.signal });
+    res = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${cfg.apiKey}`, ...extra, ...headers }, body: JSON.stringify(body), signal: ctl.signal });
   } catch (e) {
     if (timedOut) throw new AiError("模型 60 秒内没有响应，请稍后重试，或换一个更快的模型。", 408);
     if ((e as Error).name === "AbortError") throw e;
@@ -96,9 +127,11 @@ export async function chat(cfg: AiConfig, messages: Message[], { json = false, s
     } catch {
       /* ignore */
     }
-    throw new AiError(`${statusHint(res.status)}${detail ? `\n服务商说明：${detail}` : ""}`, res.status);
+    if (res.status === 429 && isOpenRouter(cfg)) throw new AiError(rateLimitMessage(cfg.model, res.headers), 429);
+    const hint = res.status === 402 && isOpenRouter(cfg) ? "OpenRouter 账户余额不足（402）：付费模型需要先充值，或改用免费模型（名称带 :free 或 openrouter/free）。" : statusHint(res.status);
+    throw new AiError(`${hint}${detail ? `\n服务商说明：${detail}` : ""}`, res.status);
   }
-  let data: { choices?: { message?: { content?: string }; finish_reason?: string }[]; base_resp?: { status_code?: number; status_msg?: string } };
+  let data: { choices?: { message?: { content?: string }; finish_reason?: string }[]; base_resp?: { status_code?: number; status_msg?: string }; error?: { code?: number; message?: string } };
   try {
     data = await res.json();
   } catch {
@@ -107,6 +140,12 @@ export async function chat(cfg: AiConfig, messages: Message[], { json = false, s
   if (data.base_resp && data.base_resp.status_code) {
     const code = data.base_resp.status_code;
     throw new AiError(`模型服务错误：${MINIMAX_CODES[code] ?? data.base_resp.status_msg ?? code}`);
+  }
+  // OpenRouter can report an upstream error inside a 200 body.
+  if (data.error && !data.choices?.length) {
+    const code = Number(data.error.code) || 0;
+    if (code === 429 && isOpenRouter(cfg)) throw new AiError(rateLimitMessage(cfg.model, res.headers), 429);
+    throw new AiError(`模型服务错误：${data.error.message ?? code}`, code);
   }
   const text = data.choices?.[0]?.message?.content;
   if (typeof text !== "string" || !text.trim()) throw new AiError(data.choices?.[0]?.finish_reason === "content_filter" ? "回复被服务商的内容审核拦截，请重试或换个说法。" : "模型返回了空内容，请重试。");

@@ -1,9 +1,10 @@
-import { Eye, EyeOff, KeyRound, PlugZap, ShieldCheck, Trash2 } from "lucide-react";
+import { Eye, EyeOff, Gauge, KeyRound, PlugZap, RefreshCw, ShieldCheck, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cacheClear, cacheCount } from "../ai/cache";
 import { chatJSON } from "../ai/client";
 import { aiConfig, isDemo, useAiConfig } from "../ai/config";
 import { obj } from "../ai/json";
+import { fetchKeyInfo, fetchModels, formatQuota, type OrModel } from "../ai/openrouter";
 import { presetById, PRESETS } from "../ai/providers";
 import { toast } from "../ui/Toast";
 
@@ -14,6 +15,7 @@ export function SettingsPage() {
   const [testing, setTesting] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [cached, setCached] = useState(0);
+  const [quota, setQuota] = useState<string | null>(null);
   useEffect(() => {
     cacheCount().then(setCached, () => setCached(0));
   }, []);
@@ -22,15 +24,23 @@ export function SettingsPage() {
     const p = presetById(id);
     aiConfig.set({ provider: p.id, baseUrl: p.baseUrl, model: p.model });
     setResult(null);
+    setQuota(null);
   };
 
   const test = async () => {
     setTesting(true);
     setResult(null);
+    setQuota(null);
     const t0 = performance.now();
     try {
       await chatJSON(aiConfig.get(), [{ role: "user", content: 'Reply with ONLY this JSON: {"ok": true, "word": "hello"}' }], (v) => obj(v, "reply"), { maxTokens: 300 });
       setResult(`✓ 连接成功（${Math.round(performance.now() - t0)} ms）`);
+      const c = aiConfig.get();
+      if (c.provider === "openrouter" && !c.proxyUrl) {
+        fetchKeyInfo(c.apiKey)
+          .then((k) => setQuota(formatQuota(k)))
+          .catch((e: Error) => setQuota(e.message));
+      }
     } catch (e) {
       setResult(`✗ ${(e as Error).message}`);
     } finally {
@@ -73,10 +83,14 @@ export function SettingsPage() {
               <span className="eyebrow">Base URL（OpenAI 兼容，需 https）</span>
               <input value={cfg.baseUrl} onChange={(e) => aiConfig.set({ baseUrl: e.target.value })} placeholder="https://api.example.com/v1" spellCheck={false} autoComplete="off" />
             </label>
-            <label className="wt-field">
-              <span className="eyebrow">模型 Model</span>
-              <input value={cfg.model} onChange={(e) => aiConfig.set({ model: e.target.value })} placeholder="model-name" spellCheck={false} autoComplete="off" />
-            </label>
+            {cfg.provider === "openrouter" ? (
+              <OpenRouterModels model={cfg.model} />
+            ) : (
+              <label className="wt-field">
+                <span className="eyebrow">模型 Model</span>
+                <input value={cfg.model} onChange={(e) => aiConfig.set({ model: e.target.value })} placeholder="model-name" spellCheck={false} autoComplete="off" />
+              </label>
+            )}
             <label className="wt-field">
               <span className="eyebrow">
                 <KeyRound size={13} /> API Key
@@ -109,6 +123,11 @@ export function SettingsPage() {
               </button>
             </div>
             {result && <p className={result.startsWith("✓") ? "wt-ok" : "wt-bad"}>{result}</p>}
+            {quota && (
+              <p className="muted wt-quota">
+                <Gauge size={14} /> {quota}
+              </p>
+            )}
           </>
         )}
       </section>
@@ -131,6 +150,51 @@ export function SettingsPage() {
       <p className="muted wt-hint">
         <ShieldCheck size={14} /> 你输入的英文和任务词会发给你选择的模型服务商处理，请阅读对方的隐私条款。详见 <a href="#/privacy">隐私政策</a>。
       </p>
+    </div>
+  );
+}
+
+/** OpenRouter model picker: live list (cached 24 h), free-only by default, any id can be typed. */
+function OpenRouterModels({ model }: { model: string }) {
+  const [models, setModels] = useState<OrModel[]>([]);
+  const [live, setLive] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [freeOnly, setFreeOnly] = useState(true);
+  const load = (force = false) => {
+    setLoading(true);
+    void fetchModels({ force }).then((r) => {
+      setModels(r.models);
+      setLive(r.live);
+      setLoading(false);
+    });
+  };
+  useEffect(() => load(), []);
+  const shown = models.filter((m) => !freeOnly || m.free);
+  const k = (n: number) => (n >= 1000000 ? `${Math.round(n / 100000) / 10}M` : `${Math.round(n / 1000)}k`);
+  return (
+    <div className="wt-field">
+      <span className="eyebrow">模型 Model（OpenRouter）</span>
+      <span className="wt-row">
+        <label className="wt-check">
+          <input type="checkbox" checked={freeOnly} onChange={(e) => setFreeOnly(e.target.checked)} /> 只看免费
+        </label>
+        <button className="icon-btn" type="button" onClick={() => load(true)} disabled={loading} aria-label="刷新模型列表" title="刷新模型列表">
+          <RefreshCw size={16} />
+        </button>
+        <small className="muted">{loading ? "加载中…" : `${shown.length} 个${live ? "" : "（离线备用列表）"}`}</small>
+      </span>
+      <select value={shown.some((m) => m.id === model) ? model : ""} onChange={(e) => e.target.value && aiConfig.set({ model: e.target.value })}>
+        {!shown.some((m) => m.id === model) && <option value="">（自定义：{model || "未填"}）</option>}
+        {shown.map((m) => (
+          <option key={m.id} value={m.id}>
+            {m.name}
+            {m.context ? ` · ${k(m.context)}` : ""}
+            {m.free ? "" : " · 付费"}
+          </option>
+        ))}
+      </select>
+      <input value={model} onChange={(e) => aiConfig.set({ model: e.target.value })} placeholder="或直接输入模型 ID，如 openrouter/free" spellCheck={false} autoComplete="off" aria-label="模型 ID" />
+      <small className="muted">免费模型有每分钟和每天的次数上限；遇到限流会自动改用 openrouter/free 重试一次。部分免费模型的提供方可能记录输入用于训练，请勿输入隐私信息。</small>
     </div>
   );
 }

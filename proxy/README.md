@@ -1,6 +1,6 @@
 # 可选代理 / Optional proxy (Cloudflare Worker)
 
-**大多数情况下不需要它。** 2026-11-22 用 `curl -X OPTIONS` 检查过：MiniMax（中国站与 Global）、DeepSeek、DashScope 兼容模式和 OpenAI 都允许浏览器跨域（CORS）直接调用，所以 App 默认直连服务商。
+**大多数情况下不需要它。** 2026-11-22 用 `curl -X OPTIONS` 检查过：MiniMax（中国站与 Global）、DeepSeek、DashScope 兼容模式、OpenRouter 和 OpenAI 都允许浏览器跨域（CORS）直接调用，所以 App 默认直连服务商。
 
 只有当你的网络或某个服务商拦截了浏览器直连时，才需要自己部署这个 Worker（本仓库没有替你部署）：
 

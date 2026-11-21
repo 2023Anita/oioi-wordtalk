@@ -22,7 +22,10 @@ export function PrivacyPage() {
             <b>API Key 只在本机。</b>你填写的模型 API Key 只存放在本机浏览器，不进入学习备份，也不会发送给我们。
           </li>
           <li>
-            <b>发给模型服务商的内容。</b>使用场景剧场、对话和逻辑训练时，你输入的英文、任务词和必要的提示词会直接发送给你选择的模型服务商（如 MiniMax、DeepSeek、通义千问、OpenAI 或你自定义的服务）。这些内容如何处理由该服务商的隐私政策决定。请不要输入病历、身份证号等敏感信息。
+            <b>发给模型服务商的内容。</b>使用场景剧场、对话和逻辑训练时，你输入的英文、任务词和必要的提示词会直接发送给你选择的模型服务商（如 MiniMax、DeepSeek、通义千问、OpenRouter、OpenAI 或你自定义的服务）。这些内容如何处理由该服务商的隐私政策决定。请不要输入病历、身份证号等敏感信息。
+          </li>
+          <li>
+            <b>OpenRouter。</b>选择 OpenRouter 时，内容会先发给 OpenRouter，再由它转给实际运行模型的提供方（如 Google、NVIDIA 等），两者的隐私政策都适用。部分免费模型的提供方可能记录输入用于训练，请勿输入隐私信息。设置页读取模型列表时会访问 OpenRouter 的公开接口（不带 Key）；「测试连接」后查询今日免费额度时会带上你的 Key 访问 OpenRouter。
           </li>
           <li>
             <b>静态资源。</b>网站托管在 GitHub Pages，访问时 GitHub 可能按其政策记录常规访问日志。
@@ -46,7 +49,10 @@ export function PrivacyPage() {
             <b>API keys stay on your device.</b> The model API key you enter is stored only in this browser, is excluded from backups, and is never sent to us.
           </li>
           <li>
-            <b>Text sent to your chosen model provider.</b> When you use Scene Theater, Chat or Logic, the English you type, the target words and the prompts are sent directly to the provider you selected (e.g. MiniMax, DeepSeek, Qwen, OpenAI or a custom endpoint), under that provider's privacy policy. Please do not enter sensitive personal or medical information.
+            <b>Text sent to your chosen model provider.</b> When you use Scene Theater, Chat or Logic, the English you type, the target words and the prompts are sent directly to the provider you selected (e.g. MiniMax, DeepSeek, Qwen, OpenRouter, OpenAI or a custom endpoint), under that provider's privacy policy. Please do not enter sensitive personal or medical information.
+          </li>
+          <li>
+            <b>OpenRouter.</b> If you choose OpenRouter, your text goes to OpenRouter and then to the provider that actually runs the model (e.g. Google, NVIDIA); both privacy policies apply. Some free-model providers may log prompts for training, so do not enter private information. The settings page reads OpenRouter's public model list (without your key), and after “Test connection” it checks today's free quota with your key.
           </li>
           <li>
             <b>Hosting.</b> The site is served by GitHub Pages, which may keep standard access logs under GitHub's policy.
