@@ -116,7 +116,9 @@ function Network({ briefs }: { briefs: WordBrief[] }) {
     }
   };
   const R = 150;
-  const shown = nodes.slice(0, 16);
+  // Phones get fewer, larger nodes; the full list is always shown below the map.
+  const max = typeof window !== "undefined" && window.innerWidth < 520 ? 10 : 16;
+  const shown = nodes.slice(0, max);
   return (
     <section className="panel">
       <WordChips words={briefs} lit={[sel.id]} onPick={setSel} />
@@ -155,7 +157,7 @@ function Network({ briefs }: { briefs: WordBrief[] }) {
           </span>
         ))}
       </div>
-      {nodes.length > 16 && <p className="muted">还有 {nodes.length - 16} 个关联没画出来。</p>}
+      {nodes.length > max && <p className="muted">还有 {nodes.length - max} 个关联没画在图上，见下方列表。</p>}
       <ul className="wt-netlist">
         {nodes.map((n) => (
           <li key={n.word}>
@@ -312,7 +314,7 @@ function Debate({ briefs }: { briefs: WordBrief[] }) {
         {msgs.length === 0 && <p className="muted">先陈述你的观点（英文）。Dr. Anita 会站在对立面反驳，并指出你推理里的漏洞。</p>}
         {msgs.map((m, i) => (
           <div key={i} className={`wt-msg is-${m.role}`}>
-            {m.role === "assistant" && <span className="wt-avatar">A</span>}
+            {m.role === "assistant" && <img className="wt-avatar" src={`${import.meta.env.BASE_URL}brand/anita-avatar.webp`} alt="" aria-hidden="true" width={32} height={32} />}
             <div className="wt-bubble">
               <p lang="en">{m.content}</p>
               {m.turn?.critique && (

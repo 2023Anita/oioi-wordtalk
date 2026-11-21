@@ -1,5 +1,5 @@
 /* OiOi WordTalk offline cache (based on Word Atlas): app shell network-first, everything else cache-first. Model API calls are cross-origin and never cached. */
-const VERSION = "wordtalk-v1";
+const VERSION = "wordtalk-v2";
 const SHELL = `${VERSION}-shell`;
 const MEDIA = `${VERSION}-media`;
 
@@ -24,7 +24,14 @@ self.addEventListener("fetch", (event) => {
   if (req.method !== "GET" || req.headers.has("range")) return;
   const url = new URL(req.url);
   if (url.origin !== location.origin) return;
-  const isShell = req.mode === "navigate" || url.pathname.endsWith("/index.json");
+  // Navigations, the word index and un-hashed brand files (logo, icons, manifest) go network-first so a
+  // redesign shows up on the next visit; hashed build assets and word media stay cache-first.
+  const isShell =
+    req.mode === "navigate" ||
+    url.pathname.endsWith("/index.json") ||
+    url.pathname.endsWith(".webmanifest") ||
+    /\/brand\//.test(url.pathname) ||
+    /\/(apple-touch-icon|favicon-\d+|icon-[\w-]+)\.png$/.test(url.pathname);
   if (isShell) {
     event.respondWith(
       fetch(req)

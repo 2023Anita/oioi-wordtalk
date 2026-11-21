@@ -26,6 +26,7 @@ import { Palette } from "./ui/Palette";
 import { Sheet } from "./ui/Sheet";
 import { shouldShowSplash, Splash } from "./ui/Splash";
 import { Toasts } from "./ui/Toast";
+import { PageBoundary } from "./ui/PageBoundary";
 
 const NAV: { page: Route["page"]; label: string; icon: typeof Compass; tab?: boolean }[] = [
   { page: "today", label: "今日", icon: Compass, tab: true },
@@ -44,7 +45,7 @@ function useTheme() {
     if (theme === "system") root.removeAttribute("data-theme");
     else root.setAttribute("data-theme", theme);
     const dark = theme === "dark" || (theme === "system" && matchMedia("(prefers-color-scheme: dark)").matches);
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#0b2324" : "#f7f6f2");
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", dark ? "#121a2b" : "#f4efe4");
   }, [theme]);
   return theme;
 }
@@ -164,6 +165,7 @@ function Shell({ privateAvailable }: { privateAvailable: boolean }) {
       )}
 
       <main className="main" id="main">
+        <PageBoundary page={route.page}>
         {route.page === "today" && <Today />}
         {route.page === "atlas" && <AtlasPage route={route} />}
         {route.page === "learn" && <Learn />}
@@ -175,6 +177,7 @@ function Shell({ privateAvailable }: { privateAvailable: boolean }) {
         {route.page === "logic" && <LogicPage />}
         {route.page === "settings" && <SettingsPage />}
         {route.page === "privacy" && <PrivacyPage />}
+        </PageBoundary>
       </main>
 
       {!focus && (

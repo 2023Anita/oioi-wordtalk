@@ -228,7 +228,7 @@ export function AtlasPage({
         <Galaxy mode="full" focus={q.trim() ? list[0]?.id : null} />
       ) : list.length === 0 ? (
         <div className="empty">
-          <img src={`${import.meta.env.BASE_URL}brand/empty.webp`} alt="" />
+          <img src={`${import.meta.env.BASE_URL}brand/mascot-writing.webp`} alt="" width={160} height={160} />
           <p>这片星域还没有词。换个筛选条件试试。</p>
         </div>
       ) : view === "grid" ? (

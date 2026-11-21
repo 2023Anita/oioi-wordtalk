@@ -12,6 +12,8 @@ import { store } from "../store/store";
 import { AiBadge, ErrorNote, WordChips } from "../ui/ai";
 import { toast } from "../ui/Toast";
 
+const AVATAR = `${import.meta.env.BASE_URL}brand/anita-avatar.webp`;
+
 interface Msg {
   role: "user" | "assistant";
   content: string;
@@ -70,8 +72,10 @@ export function ChatPage() {
       } catch {
         /* ignore */
       }
-    end.current?.scrollIntoView({ behavior: "smooth", block: "end" });
-  }, [msgs, lit, key]);
+    // Scroll only the thread, never the page: opening the chat must not jump past the header.
+    const thread = end.current?.parentElement;
+    if (thread) thread.scrollTo({ top: thread.scrollHeight, behavior: "smooth" });
+  }, [msgs, lit, key, busy]);
 
   const send = async (content: string) => {
     const t = content.trim();
@@ -175,7 +179,7 @@ export function ChatPage() {
       <section className="panel wt-thread" aria-live="polite">
         {msgs.map((m, i) => (
           <div key={i} className={`wt-msg is-${m.role}`}>
-            {m.role === "assistant" && <span className="wt-avatar" aria-hidden="true">A</span>}
+            {m.role === "assistant" && <img className="wt-avatar" src={AVATAR} alt="" aria-hidden="true" width={32} height={32} />}
             <div className="wt-bubble">
               <p lang="en">{m.content}</p>
               {m.turn && (
@@ -202,7 +206,7 @@ export function ChatPage() {
         ))}
         {busy && (
           <div className="wt-msg is-assistant">
-            <span className="wt-avatar">A</span>
+            <img className="wt-avatar" src={AVATAR} alt="" aria-hidden="true" width={32} height={32} />
             <div className="wt-bubble">
               <span className="spinner" />
             </div>

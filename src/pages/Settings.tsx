@@ -15,7 +15,7 @@ export function SettingsPage() {
   const [result, setResult] = useState<string | null>(null);
   const [cached, setCached] = useState(0);
   useEffect(() => {
-    void cacheCount().then(setCached);
+    cacheCount().then(setCached, () => setCached(0));
   }, []);
 
   const choose = (id: string) => {

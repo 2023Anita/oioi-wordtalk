@@ -70,3 +70,14 @@ test("config sanitizer keeps keys local-shaped and rejects http", () => {
   assert.equal(endpoint({ ...defaultAiConfig, baseUrl: "https://api.minimaxi.com/v1/" }).url, "https://api.minimaxi.com/v1/chat/completions");
   assert.equal(endpoint({ ...defaultAiConfig, baseUrl: "https://a/v1", proxyUrl: "https://p.dev" }).headers["X-Target-Base"], "https://a/v1");
 });
+
+test("provider errors become clear, actionable messages", async () => {
+  const { errorDetail, statusHint } = await import("./client");
+  assert.match(statusHint(401), /API Key/);
+  assert.match(statusHint(404), /Base URL/);
+  assert.match(statusHint(429), /429/);
+  assert.match(statusHint(503), /稍后重试/);
+  assert.equal(errorDetail('{"error":{"message":"model not found"}}'), "model not found");
+  assert.equal(errorDetail('{"base_resp":{"status_code":1004,"status_msg":"login fail"}}'), "login fail");
+  assert.equal(errorDetail("<html><body>Bad gateway</body></html>"), "Bad gateway");
+});

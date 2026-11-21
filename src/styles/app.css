@@ -2,44 +2,49 @@
    Paper, ink and four field-guide pigments, matched to the illustration palette. */
 
 :root {
-  /* Light: bright ivory paper lit from above; gold is the colour of "light". */
-  --paper: #f7f6f2;
-  --paper-2: #eeede6;
-  --paper-3: #e2e4dc;
-  --card: #ffffff;
-  --card-2: #f6f8f5;
-  --ink: #14302f;
-  --ink-2: #3d5655;
-  --ink-3: #6f8280;
-  --ink-4: #a5b0ad;
-  --line: rgba(20, 48, 47, 0.1);
-  --line-strong: rgba(20, 48, 47, 0.16);
-  --terra: #174f51;
-  --terra-ink: #10403f;
-  --terra-soft: #d7ece7;
-  --ochre: #d8a331;
-  --ochre-soft: #f6e8c6;
-  --sage: #3f8f80;
-  --sage-ink: #2b6e62;
-  --sage-soft: #dbefe9;
-  --sky: #5f88a8;
-  --sky-soft: #dde8f0;
-  --plum: #9a6283;
-  --glow: rgba(121, 199, 184, 0.28);
-  --mark: rgba(216, 163, 49, 0.32);
-  --shadow-sm: 0 1px 2px rgba(30, 38, 64, 0.06), 0 2px 6px -2px rgba(30, 38, 64, 0.06);
-  --shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 1px 2px rgba(30, 38, 64, 0.05), 0 18px 40px -24px rgba(30, 38, 64, 0.28);
-  --shadow-lg: 0 30px 80px -30px rgba(20, 26, 46, 0.45), 0 8px 24px -12px rgba(20, 26, 46, 0.2);
-  --serif: "Fraunces Variable", "Noto Serif SC", "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", Georgia, serif;
-  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "Noto Sans SC", Roboto, sans-serif;
+  /* Light — 和紙 washi: warm hand-made paper, 藍 indigo ink, 朱 vermilion seal, 桜 sakura. */
+  --paper: #f4efe4;
+  --paper-2: #ebe4d5;
+  --paper-3: #ddd5c3;
+  --card: #fbf8f1;
+  --card-2: #f5f0e5;
+  --ink: #1f2a3d;
+  --ink-2: #434d63;
+  --ink-3: #6b7385;
+  --ink-4: #a3a8b2;
+  --line: rgba(31, 42, 61, 0.1);
+  --line-strong: rgba(31, 42, 61, 0.17);
+  --terra: #2e4a7d;
+  --terra-ink: #223a66;
+  --terra-soft: #dfe5f0;
+  --ochre: #c8553d;
+  --ochre-soft: #f6ddd4;
+  --sage: #4f7a5a;
+  --sage-ink: #3b6247;
+  --sage-soft: #e1eadb;
+  --sky: #4f8aa0;
+  --sky-soft: #dceaef;
+  --plum: #8a5a83;
+  --shu: #c8553d;
+  --ai: #2e4a7d;
+  --sakura: #f1c6cf;
+  --glow: rgba(241, 198, 207, 0.38);
+  --mark: rgba(236, 160, 176, 0.38);
+  --wave: rgba(46, 74, 125, 0.09);
+  --shadow-sm: 0 1px 2px rgba(31, 42, 61, 0.06), 0 2px 6px -2px rgba(31, 42, 61, 0.06);
+  --shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 1px 2px rgba(31, 42, 61, 0.05), 0 18px 40px -24px rgba(31, 42, 61, 0.26);
+  --shadow-lg: 0 30px 80px -30px rgba(23, 32, 52, 0.42), 0 8px 24px -12px rgba(23, 32, 52, 0.18);
+  --serif: "Fraunces Variable", "Songti SC", "STSong", "Noto Serif CJK SC", "Noto Serif SC", "Source Han Serif SC", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+  --mincho: "Songti SC", "STSong", "Noto Serif CJK SC", "Noto Serif SC", "Source Han Serif SC", "Hiragino Mincho ProN", "Yu Mincho", serif;
+  --sans: "Inter", -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Segoe UI", "Microsoft YaHei", "Noto Sans SC", "Noto Sans CJK SC", Roboto, sans-serif;
   --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
   --r-sm: 10px;
   --r: 16px;
-  --r-lg: 24px;
-  --r-xl: 32px;
+  --r-lg: 22px;
+  --r-xl: 30px;
   --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
   --spring: cubic-bezier(0.34, 1.4, 0.5, 1);
-  --top: 68px;
+  --top: 64px;
   --tab: 0px;
   --gutter: 20px;
   color-scheme: light;
@@ -47,29 +52,32 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #0b2324;
-    --paper-2: #10292a;
-    --paper-3: #1d4545;
-    --card: #10302f;
-    --card-2: #143a39;
-    --ink: #e9f1ee;
-    --ink-2: rgba(233, 241, 238, 0.78);
-    --ink-3: #8fa8a3;
-    --ink-4: #5c7774;
-    --line: rgba(255, 255, 255, 0.08);
-    --line-strong: rgba(255, 255, 255, 0.14);
-    --terra: #79c7b8;
-    --terra-ink: #bff0e5;
-    --terra-soft: rgba(121, 199, 184, 0.16);
-    --ochre: #d8a331;
-    --ochre-soft: rgba(216, 163, 49, 0.16);
-    --sage: #70b9a9;
-    --sage-ink: #bff0e5;
-    --sage-soft: rgba(112, 185, 169, 0.15);
-    --sky: #8fb2cc;
-    --sky-soft: rgba(143, 178, 204, 0.15);
-    --glow: rgba(121, 199, 184, 0.14);
-    --mark: rgba(216, 163, 49, 0.28);
+    --paper: #121a2b;
+    --paper-2: #172136;
+    --paper-3: #26324c;
+    --card: #1a2439;
+    --card-2: #1f2b44;
+    --ink: #efe8da;
+    --ink-2: rgba(239, 232, 218, 0.8);
+    --ink-3: #9ca4b6;
+    --ink-4: #636e84;
+    --line: rgba(239, 232, 218, 0.08);
+    --line-strong: rgba(239, 232, 218, 0.15);
+    --terra: #a3bbe6;
+    --terra-ink: #d4e0f7;
+    --terra-soft: rgba(163, 187, 230, 0.15);
+    --ochre: #e58066;
+    --ochre-soft: rgba(229, 128, 102, 0.16);
+    --sage: #93bb98;
+    --sage-ink: #d0e6d0;
+    --sage-soft: rgba(147, 187, 152, 0.15);
+    --sky: #95bfce;
+    --sky-soft: rgba(149, 191, 206, 0.15);
+    --shu: #e0694d;
+    --ai: #a3bbe6;
+    --glow: rgba(241, 198, 207, 0.09);
+    --mark: rgba(241, 160, 178, 0.3);
+    --wave: rgba(163, 187, 230, 0.07);
     --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
     --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 20px 40px -24px rgba(0, 0, 0, 0.7);
     --shadow-lg: 0 30px 80px -20px rgba(0, 0, 0, 0.75);
@@ -77,29 +85,32 @@
   }
 }
 :root[data-theme="dark"] {
-  --paper: #0b2324;
-  --paper-2: #10292a;
-  --paper-3: #1d4545;
-  --card: #10302f;
-  --card-2: #143a39;
-  --ink: #e9f1ee;
-  --ink-2: rgba(233, 241, 238, 0.78);
-  --ink-3: #8fa8a3;
-  --ink-4: #5c7774;
-  --line: rgba(255, 255, 255, 0.08);
-  --line-strong: rgba(255, 255, 255, 0.14);
-  --terra: #79c7b8;
-  --terra-ink: #bff0e5;
-  --terra-soft: rgba(121, 199, 184, 0.16);
-  --ochre: #d8a331;
-  --ochre-soft: rgba(216, 163, 49, 0.16);
-  --sage: #70b9a9;
-  --sage-ink: #bff0e5;
-  --sage-soft: rgba(112, 185, 169, 0.15);
-  --sky: #8fb2cc;
-  --sky-soft: rgba(143, 178, 204, 0.15);
-  --glow: rgba(121, 199, 184, 0.14);
-  --mark: rgba(216, 163, 49, 0.28);
+  --paper: #121a2b;
+  --paper-2: #172136;
+  --paper-3: #26324c;
+  --card: #1a2439;
+  --card-2: #1f2b44;
+  --ink: #efe8da;
+  --ink-2: rgba(239, 232, 218, 0.8);
+  --ink-3: #9ca4b6;
+  --ink-4: #636e84;
+  --line: rgba(239, 232, 218, 0.08);
+  --line-strong: rgba(239, 232, 218, 0.15);
+  --terra: #a3bbe6;
+  --terra-ink: #d4e0f7;
+  --terra-soft: rgba(163, 187, 230, 0.15);
+  --ochre: #e58066;
+  --ochre-soft: rgba(229, 128, 102, 0.16);
+  --sage: #93bb98;
+  --sage-ink: #d0e6d0;
+  --sage-soft: rgba(147, 187, 152, 0.15);
+  --sky: #95bfce;
+  --sky-soft: rgba(149, 191, 206, 0.15);
+  --shu: #e0694d;
+  --ai: #a3bbe6;
+  --glow: rgba(241, 198, 207, 0.09);
+  --mark: rgba(241, 160, 178, 0.3);
+  --wave: rgba(163, 187, 230, 0.07);
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
   --shadow: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 20px 40px -24px rgba(0, 0, 0, 0.7);
   --shadow-lg: 0 30px 80px -20px rgba(0, 0, 0, 0.75);
@@ -4754,4 +4765,697 @@ a:hover .mark-needle,
 }
 .wt-src-bars b {
   text-align: right;
+}
+
+/* =====================================================================
+   和 · Japanese washi theme (2026-11 polish)
+   Washi paper, 藍 indigo ink, 朱 vermilion seal, 桜 sakura, 青海波 seigaiha waves.
+   Appended last so it refines the base system without rewriting it.
+   ===================================================================== */
+
+:root {
+  --seigaiha: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'><g fill='none' stroke='%232e4a7d' stroke-width='1'><g id='s'><circle cx='24' cy='0' r='22'/><circle cx='24' cy='0' r='16'/><circle cx='24' cy='0' r='10'/><circle cx='24' cy='0' r='4'/></g><use href='%23s' x='-24' y='12'/><use href='%23s' x='24' y='12'/><use href='%23s' y='24'/></g></svg>");
+  --washi-fibre: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='260' height='260'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.03 .22' numOctaves='3' seed='7' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .42 0 0 0 .9 -.52'/></filter><rect width='100%' height='100%' filter='url(%23f)'/></svg>");
+}
+:root[data-theme="dark"] {
+  --seigaiha: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='48' height='24' viewBox='0 0 48 24'><g fill='none' stroke='%23a3bbe6' stroke-width='1'><g id='s'><circle cx='24' cy='0' r='22'/><circle cx='24' cy='0' r='16'/><circle cx='24' cy='0' r='10'/><circle cx='24' cy='0' r='4'/></g><use href='%23s' x='-24' y='12'/><use href='%23s' x='24' y='12'/><use href='%23s' y='24'/></g></svg>");
+}
+
+/* Paper: warm base + long washi fibres + the original fine grain (body::before). */
+body,
+:root[data-theme="dark"] body {
+  background:
+    radial-gradient(900px 420px at 88% -120px, var(--glow), transparent 70%) no-repeat,
+    var(--washi-fibre),
+    var(--paper);
+  background-size: auto, 260px 260px, auto;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body {
+    background:
+      radial-gradient(900px 420px at 88% -120px, var(--glow), transparent 70%) no-repeat,
+      var(--washi-fibre),
+      var(--paper);
+    background-size: auto, 260px 260px, auto;
+  }
+}
+:root[data-theme="dark"] body {
+  background-blend-mode: normal, soft-light, normal;
+}
+body::before {
+  opacity: 0.28;
+}
+
+/* A soft band of seigaiha waves under the header, fading into the paper. */
+.app::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 260px;
+  z-index: -1;
+  pointer-events: none;
+  background-image: var(--seigaiha);
+  background-size: 48px 24px;
+  opacity: 0.11;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0, rgba(0, 0, 0, 0.5) 40%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0, rgba(0, 0, 0, 0.5) 40%, transparent 100%);
+}
+.app {
+  position: relative;
+  isolation: isolate;
+}
+:root[data-theme="dark"] .app::before {
+  opacity: 0.09;
+}
+
+/* Headings: mincho serif for CJK, Fraunces for Latin. */
+.display,
+.page-head h1,
+h2,
+h3:not(.eyebrow) {
+  font-family: var(--serif);
+}
+.display {
+  letter-spacing: 0;
+  font-weight: 700;
+  font-size: clamp(26px, 6.4vw, 48px);
+  line-height: 1.22;
+}
+.eyebrow {
+  color: var(--shu);
+  letter-spacing: 0.12em;
+}
+:root[data-theme="dark"] .eyebrow {
+  color: #e8957f;
+}
+.eyebrow-light,
+.journey .eyebrow,
+.galaxy-panel .eyebrow {
+  color: inherit;
+}
+.lede {
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+::selection {
+  background: var(--mark);
+}
+:focus-visible {
+  outline-color: var(--shu);
+}
+
+/* ---------- header / brand ---------- */
+.topbar {
+  height: calc(var(--top) + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  padding-left: max(var(--gutter), env(safe-area-inset-left), calc((100vw - 1200px) / 2 + var(--gutter)));
+  padding-right: max(var(--gutter), env(safe-area-inset-right), calc((100vw - 1200px) / 2 + var(--gutter)));
+  gap: 10px;
+  background: color-mix(in oklab, var(--paper) 86%, transparent);
+}
+.topbar.is-scrolled,
+.topbar {
+  border-bottom: 1px solid var(--line);
+}
+.topbar-logo {
+  margin-right: 0;
+  flex: none;
+  min-width: 0;
+}
+.logo {
+  gap: 8px;
+  white-space: nowrap;
+}
+.mark-img {
+  width: auto;
+  height: 34px;
+  object-fit: contain;
+  flex: none;
+  user-select: none;
+}
+.footer .mark-img {
+  height: 26px;
+  width: auto;
+}
+.logo-text {
+  display: grid;
+  gap: 1px;
+  align-items: start;
+  padding-left: 8px;
+  border-left: 1px solid var(--line-strong);
+}
+.logo-text b {
+  font: 700 18px/1 var(--mincho);
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+}
+.logo-text small {
+  font: italic 500 11.5px/1 var(--serif);
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+/* The logo's dark green lettering needs a paper backing on indigo. */
+:root[data-theme="dark"] .mark-img,
+:root[data-theme="dark"] .splash-logo,
+:root[data-theme="dark"] .about-logo {
+  background: #f1ebde;
+  border-radius: 10px;
+  padding: 2px 5px;
+  box-shadow: 0 2px 10px -4px rgba(0, 0, 0, 0.6);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mark-img,
+  :root:not([data-theme="light"]) .splash-logo,
+  :root:not([data-theme="light"]) .about-logo {
+    background: #f1ebde;
+    border-radius: 10px;
+    padding: 2px 5px;
+  }
+}
+.topbar-tools {
+  gap: 2px;
+  flex: none;
+}
+.icon-btn {
+  min-width: 44px;
+  min-height: 44px;
+}
+@media (max-width: 400px) {
+  .mark-img {
+    height: 30px;
+  }
+  .topbar .logo-text small {
+    display: none;
+  }
+  .topbar .icon-btn,
+  .topbar .search-pill {
+    min-width: 40px;
+    width: 40px;
+  }
+}
+.topnav a.is-on {
+  background: var(--terra-soft);
+  color: var(--terra-ink);
+}
+
+/* ---------- tab bar: five tabs, safe areas, a vermilion dot for the active tab ---------- */
+.tabbar {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  padding: 4px max(6px, env(safe-area-inset-left)) calc(4px + env(safe-area-inset-bottom)) max(6px, env(safe-area-inset-right));
+  background: color-mix(in oklab, var(--paper) 90%, transparent);
+  border-top: 1px solid var(--line-strong);
+}
+.tabbar a {
+  position: relative;
+  min-height: 52px;
+  align-content: center;
+  padding: 6px 0 5px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.tabbar a.is-on {
+  color: var(--terra-ink);
+}
+.tabbar a.is-on::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: var(--shu);
+}
+.app:not(.is-focus) {
+  --tab: calc(62px + env(safe-area-inset-bottom));
+}
+@media (min-width: 760px) {
+  .app:not(.is-focus) {
+    --tab: 0px;
+  }
+}
+
+/* ---------- surfaces ---------- */
+.panel {
+  background: color-mix(in oklab, var(--card) 92%, transparent);
+  border-color: var(--line);
+  border-radius: var(--r-lg);
+}
+@media (max-width: 559px) {
+  .panel {
+    padding: 18px 16px;
+  }
+}
+.btn-primary {
+  background: var(--ai);
+  color: #fbf8f1;
+  box-shadow: 0 10px 22px -12px rgba(46, 74, 125, 0.75), 0 1px 0 rgba(255, 255, 255, 0.14) inset;
+}
+:root[data-theme="dark"] .btn-primary {
+  background: #e9e1d0;
+  color: #16203a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .btn-primary {
+    background: #e9e1d0;
+    color: #16203a;
+  }
+}
+.btn-terra {
+  background: var(--shu);
+  box-shadow: 0 10px 22px -12px rgba(200, 85, 61, 0.8);
+}
+.btn {
+  min-height: 44px;
+}
+.chip-btn {
+  min-height: 38px;
+}
+.chip-btn.is-on {
+  background: var(--ai);
+  border-color: var(--ai);
+  color: #fbf8f1;
+}
+:root[data-theme="dark"] .chip-btn.is-on {
+  background: var(--terra-soft);
+  color: var(--terra-ink);
+  border-color: var(--terra);
+}
+
+/* Form controls: 16px stops iOS zoom-on-focus; selects show their whole label. */
+.wt-field input,
+.wt-field select,
+.wt-field textarea,
+.wt-chain textarea,
+.wt-pair-row input,
+.wt-compose input {
+  font-size: 16px;
+  min-height: 44px;
+}
+.wt-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 38px;
+  white-space: normal;
+  text-overflow: ellipsis;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1.5l5 5 5-5' fill='none' stroke='%236b7385' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  line-height: 1.35;
+}
+.wt-field input:focus,
+.wt-field select:focus,
+.wt-field textarea:focus,
+.wt-chain textarea:focus {
+  outline: 2px solid color-mix(in oklab, var(--ai) 55%, transparent);
+  outline-offset: 1px;
+  border-color: var(--ai);
+}
+.wt-field small,
+.wt-field a {
+  overflow-wrap: anywhere;
+}
+.wt-field .eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  line-height: 1.4;
+}
+.wt-row {
+  flex-wrap: wrap;
+}
+.wt-badge {
+  max-width: 100%;
+  min-height: 32px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wt-head .wt-badge {
+  margin-top: 12px;
+}
+
+/* Clear, multi-line AI errors. */
+.wt-error {
+  border-color: color-mix(in oklab, var(--shu) 45%, transparent);
+  background: color-mix(in oklab, var(--shu) 8%, transparent);
+}
+.wt-error p {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+}
+.wt-bad {
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+/* Dr. Anita avatar: the OiOi capybara. */
+.wt-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center bottom;
+  background: #f1ebde;
+  border: 1.5px solid color-mix(in oklab, var(--shu) 55%, transparent);
+  padding: 1px;
+}
+.wt-bubble {
+  overflow-wrap: anywhere;
+}
+.wt-msg.is-user .wt-bubble {
+  background: var(--terra-soft);
+}
+
+/* Long labels wrap instead of being cut. */
+.wt-chip,
+.wt-chip small,
+.wt-steps b,
+.wt-steps small {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.wt-chip small {
+  max-width: 14em;
+}
+.wt-steps button {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 8px;
+  padding: 12px 10px;
+}
+.wt-steps button > svg {
+  display: none;
+}
+.wt-step-n {
+  background: var(--paper-3);
+}
+.wt-steps .is-done .wt-step-n {
+  background: var(--sage);
+}
+.wt-net-node {
+  max-width: 30%;
+  padding: 4px 8px;
+}
+.wt-net-node b {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+  font-size: 12.5px;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+.wt-net-center {
+  background: var(--ai);
+  color: #fbf8f1;
+  max-width: 44%;
+  overflow-wrap: break-word;
+  text-align: center;
+  font-size: 18px;
+}
+:root[data-theme="dark"] .wt-net-center {
+  background: #e9e1d0;
+  color: #16203a;
+}
+
+/* ---------- today ---------- */
+.greet {
+  position: relative;
+  margin: -8px calc(-1 * var(--gutter)) 18px;
+  padding: 26px var(--gutter) 34px;
+  min-height: 168px;
+  display: grid;
+  align-content: end;
+  isolation: isolate;
+  overflow: hidden;
+}
+.greet::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: url("/brand/jp-hero-light.webp") right 30% / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  opacity: 0.95;
+}
+:root[data-theme="dark"] .greet::before {
+  background-image: url("/brand/jp-hero-dark.webp");
+  opacity: 0.9;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .greet::before {
+    background-image: url("/brand/jp-hero-dark.webp");
+  }
+}
+.greet .display {
+  max-width: 13em;
+  text-shadow: 0 1px 0 color-mix(in oklab, var(--paper) 70%, transparent);
+}
+@media (min-width: 760px) {
+  .greet {
+    margin: 0 0 24px;
+    padding: 40px 36px 44px;
+    min-height: 240px;
+    border-radius: var(--r-xl);
+  }
+  .greet::before {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+
+/* Topic tiles: with mandatory start-snapping the last card could never come fully into view
+   (it snapped back and stayed cut off). Let the last one snap to the end instead. */
+.topic-tiles {
+  grid-auto-columns: minmax(148px, 42vw);
+  scroll-snap-type: x proximity;
+}
+.topic-tiles li:last-child {
+  scroll-snap-align: end;
+}
+@media (min-width: 560px) {
+  .topic-tiles {
+    grid-auto-columns: 168px;
+  }
+}
+.topic-tiles button {
+  background: #ece3d2;
+  border-radius: 18px;
+}
+.topic-tiles b {
+  font-family: var(--serif);
+}
+
+/* ---------- about ---------- */
+.about-head {
+  position: relative;
+}
+.about-logo {
+  width: min(300px, 78vw);
+  height: auto;
+  margin: 0 0 18px -6px;
+}
+
+/* ---------- empty / error states ---------- */
+.empty img {
+  width: 160px;
+  height: 160px;
+  object-fit: contain;
+  margin: 0 auto 8px;
+}
+.page-error {
+  max-width: 640px;
+}
+.page-error .display {
+  margin-bottom: 10px;
+}
+
+/* ---------- footer ---------- */
+.footer {
+  position: relative;
+  border-top: 0;
+  padding-top: 40px;
+}
+.footer::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 22px;
+  background-image: var(--seigaiha);
+  background-size: 48px 24px;
+  opacity: 0.18;
+}
+.footer p {
+  overflow-wrap: anywhere;
+}
+
+/* ---------- splash: washi title card ---------- */
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  cursor: pointer;
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--paper);
+  perspective: none;
+  display: grid;
+  place-items: center;
+  transition: opacity var(--splash-fade, 520ms) var(--ease), transform var(--splash-fade, 520ms) var(--ease), filter var(--splash-fade, 520ms);
+}
+.splash.is-out {
+  opacity: 0;
+  transform: scale(1.02);
+  filter: blur(2px);
+  pointer-events: none;
+}
+.splash-bg {
+  position: absolute;
+  inset: 0;
+  background: url("/brand/jp-splash-light.webp") center bottom / cover no-repeat, var(--paper);
+  animation: splash-bg 2.4s var(--ease) both;
+}
+:root[data-theme="dark"] .splash-bg {
+  background-image: url("/brand/jp-splash-dark.webp");
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .splash-bg {
+    background-image: url("/brand/jp-splash-dark.webp");
+  }
+}
+@media (min-aspect-ratio: 4/5) {
+  .splash-bg {
+    background-image: url("/brand/jp-hero-light.webp");
+    background-position: right center;
+  }
+  :root[data-theme="dark"] .splash-bg {
+    background-image: url("/brand/jp-hero-dark.webp");
+  }
+}
+@keyframes splash-bg {
+  from {
+    opacity: 0.4;
+    transform: scale(1.04);
+  }
+}
+.splash-center {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  text-align: center;
+  padding: 0 24px;
+  transform: translateY(-10vh);
+}
+.splash-logo {
+  width: min(300px, 76vw);
+  height: auto;
+  margin-bottom: 14px;
+  animation: splash-rise 0.9s var(--ease) both;
+}
+.splash-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: splash-rise 0.9s 0.12s var(--ease) both;
+}
+.splash-title b {
+  font: 700 clamp(44px, 14vw, 64px) / 1 var(--mincho);
+  letter-spacing: 0.18em;
+  padding-left: 0.18em;
+}
+.hanko {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background: var(--shu);
+  color: #fbf3e6;
+  font: 700 20px/1 var(--mincho);
+  transform: rotate(-4deg);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.18);
+}
+.splash-en {
+  font: italic 500 15px/1.2 var(--serif);
+  letter-spacing: 0.24em;
+  color: var(--ink-3);
+  animation: splash-rise 0.9s 0.2s var(--ease) both;
+}
+.splash-tag {
+  margin-top: 14px;
+  font: 500 14.5px/1.6 var(--mincho);
+  letter-spacing: 0.16em;
+  color: var(--ink-2);
+  animation: splash-rise 0.9s 0.3s var(--ease) both;
+}
+@keyframes splash-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+.splash-petals i {
+  position: absolute;
+  top: -20px;
+  left: calc(8% + var(--i) * 13%);
+  width: 10px;
+  height: 8px;
+  border-radius: 80% 0 80% 0;
+  background: #f2bfca;
+  opacity: 0.85;
+  animation: petal calc(4.2s + var(--i) * 0.45s) calc(var(--i) * -0.7s) linear infinite;
+}
+@keyframes petal {
+  to {
+    transform: translate3d(-60px, 105vh, 0) rotate(540deg);
+  }
+}
+.splash-skip {
+  position: absolute;
+  top: calc(14px + env(safe-area-inset-top));
+  right: calc(16px + env(safe-area-inset-right));
+  min-height: 40px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  color: var(--ink-2);
+  background: color-mix(in oklab, var(--paper) 70%, transparent);
+  border: 1px solid var(--line-strong);
+}
+.splash.is-reduced .splash-petals,
+.splash.is-reduced * {
+  animation: none !important;
+}
+
+/* ---------- boot screen ---------- */
+.boot .mark-img {
+  height: 56px;
+}
+
+/* ---------- small phones ---------- */
+@media (max-width: 400px) {
+  :root {
+    --gutter: 16px;
+  }
+}
+
+.wt-hint {
+  display: block;
+  line-height: 1.7;
+}
+.wt-hint svg {
+  display: inline-block;
+  vertical-align: -2px;
+  margin-right: 4px;
 }

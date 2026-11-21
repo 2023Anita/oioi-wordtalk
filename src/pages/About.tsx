@@ -6,7 +6,8 @@ export function About() {
   const atlas = useAtlas();
   return (
     <div className="page about wt-prose">
-      <header className="page-head">
+      <header className="page-head about-head">
+        <img className="about-logo" src={`${import.meta.env.BASE_URL}brand/logo-anim.webp`} alt="OiOi MedAI Academy 标志：水豚与企鹅" width={300} height={117} />
         <p className="eyebrow">关于 · 致谢 · About & Credits</p>
         <h1 className="display">OiOi WordTalk · 词聊</h1>
         <p className="lede">

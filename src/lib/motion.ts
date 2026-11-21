@@ -11,7 +11,21 @@ export function transition(update: () => void) {
     update();
     return;
   }
-  d.startViewTransition(() => flushSync(update));
+  // If the transition cannot start or its snapshot fails (seen on some iOS builds), make sure the
+  // new page is still committed instead of leaving the old one or a blank frame on screen.
+  let done = false;
+  const run = () => {
+    if (done) return;
+    done = true;
+    flushSync(update);
+  };
+  try {
+    const t = d.startViewTransition(run);
+    t.finished.catch(run);
+    window.setTimeout(run, 400);
+  } catch {
+    run();
+  }
 }
 
 /** Morph an element (e.g. a gallery tile's illustration) into the word card. */
