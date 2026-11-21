@@ -22,14 +22,11 @@ export function Speak({
   kbd?: string;
 }) {
   const [on, setOn] = useState(false);
-  const run = async (e: React.MouseEvent) => {
+  // Must stay synchronous up to play(): iOS only allows audio/speech started inside the tap.
+  const run = (e: React.MouseEvent) => {
     e.stopPropagation();
     setOn(true);
-    try {
-      await play(url, text, accent, rate);
-    } finally {
-      setOn(false);
-    }
+    void play(url, text, accent, rate).finally(() => setOn(false));
   };
   return (
     <button
