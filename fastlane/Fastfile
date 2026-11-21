@@ -38,12 +38,15 @@ platform :ios do
     raw = ENV["ASC_KEY_P8"].to_s
     File.write(key_path, raw.include?("BEGIN PRIVATE KEY") ? raw : Base64.decode64(raw))
 
+    team = ENV["APPLE_TEAM_ID"].to_s
+    team_arg = team.empty? ? "" : " DEVELOPMENT_TEAM=#{team}"
+
     build_app(
       project: PROJECT,
       scheme: SCHEME,
       export_method: "app-store",
       clean: true,
-      xcargs: use_match ? "" : "-allowProvisioningUpdates -authenticationKeyPath #{key_path} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}",
+      xcargs: (use_match ? "" : "-allowProvisioningUpdates -authenticationKeyPath #{key_path} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}") + team_arg,
       export_xcargs: use_match ? nil : "-allowProvisioningUpdates -authenticationKeyPath #{key_path} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}"
     )
 

@@ -10,7 +10,7 @@ import { splitPair } from "../lib/text";
 import { logReview } from "../store/session";
 import { Rating } from "../store/srs";
 import { store } from "../store/store";
-import { AiBadge, ErrorNote, WordChips } from "../ui/ai";
+import { AiBadge, AiMeta, ErrorNote, WordChips } from "../ui/ai";
 
 type Tab = "net" | "chain" | "debate" | "pair";
 const TABS: { id: Tab; label: string; icon: typeof GitBranch }[] = [
@@ -165,6 +165,7 @@ function Network({ briefs }: { briefs: WordBrief[] }) {
           </li>
         ))}
       </ul>
+      {extra.length > 0 && <AiMeta text={extra.map((n) => `${n.word} (${n.relation}) ${n.note}`).join("\n")} where={`Logic · word network · ${sel.word}`} />}
       {error && <ErrorNote error={error} onRetry={expand} />}
       <button className="btn btn-ghost" onClick={expand} disabled={busy}>
         <Sparkles size={16} /> {busy ? "扩展中…" : "让 AI 扩展词网"}
@@ -250,6 +251,7 @@ function Chain({ briefs }: { briefs: WordBrief[] }) {
               {result.model}
             </blockquote>
           )}
+          <AiMeta text={`${result.overall}\n${result.model}`} where="Logic · argument review" demo={!result.model} />
         </div>
       )}
     </section>
@@ -322,6 +324,7 @@ function Debate({ briefs }: { briefs: WordBrief[] }) {
                   <p>🧩 {m.turn.critique}</p>
                 </div>
               )}
+              {m.role === "assistant" && <AiMeta text={m.content} where="Logic · debate" demo={m.content.startsWith("[Demo]")} />}
             </div>
           </div>
         ))}
@@ -427,6 +430,7 @@ function Pair({ briefs }: { briefs: WordBrief[] }) {
           ))}
         </ol>
       )}
+      {items && <AiMeta text={items.map((it) => `${it.sentence} [${it.options.join(" / ")}] ${it.why}`).join("\n")} where="Logic · confusable pair" />}
     </section>
   );
 }

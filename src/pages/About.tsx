@@ -1,6 +1,7 @@
-import { ArrowUpRight, Github, Heart, ShieldCheck } from "lucide-react";
+import { ArrowUpRight, Github, Heart, Mail, ShieldCheck } from "lucide-react";
 import { useAtlas } from "../atlas/context";
-import { ACADEMY_URL, REPO_URL, UPSTREAM_URL } from "../config";
+import { ACADEMY_URL, CONTACT_EMAIL, REPO_URL, UPSTREAM_URL } from "../config";
+import { MedicalNotice } from "../ui/ai";
 
 export function About() {
   const atlas = useAtlas();
@@ -22,6 +23,9 @@ export function About() {
           </a>
           <a className="btn btn-ghost" href="#/privacy">
             <ShieldCheck size={18} /> 隐私政策
+          </a>
+          <a className="btn btn-ghost" href={`mailto:${CONTACT_EMAIL}`}>
+            <Mail size={18} /> 联系与反馈
           </a>
         </div>
       </header>
@@ -50,9 +54,12 @@ export function About() {
               <b>界面音效与背景音乐</b>：原项目的录制音效和配乐不在 CC BY 授权范围内，本应用已全部移除，改为浏览器实时合成的简单提示音。
             </li>
             <li>本应用是独立的二次开发作品，与原作者及「词光」官方 App 无关，也不代表原作者认可或背书。</li>
+            <li>
+              <b>商标声明</b>：IELTS（雅思）是 British Council、IDP: IELTS Australia 和 Cambridge University Press &amp; Assessment 的注册商标。本应用是独立的英语学习工具，与 IELTS 及上述机构没有任何关联，也未获其认可或背书。
+            </li>
           </ul>
           <p className="muted" lang="en">
-            Built on the open-source project Word Atlas (词光) by designfuchen. Code under MIT; dataset, illustrations and word audio © Word Atlas contributors, CC BY 4.0, modified and extended here. Not affiliated with or endorsed by the original author. Not an official IELTS product.
+            Built on the open-source project Word Atlas (词光) by designfuchen. Code under MIT; dataset, illustrations and word audio © Word Atlas contributors, CC BY 4.0, modified and extended here. Not affiliated with or endorsed by the original author. Not affiliated with or endorsed by IELTS (British Council, IDP: IELTS Australia, Cambridge University Press &amp; Assessment); IELTS is their registered trademark.
           </p>
         </section>
 
@@ -80,7 +87,14 @@ export function About() {
         <section className="panel">
           <h3 className="eyebrow">内容说明</h3>
           <p className="muted">
-            词库内容由 AI 按规范生成并经自动校验，未逐条人工审校；AI 对话和批改也可能出错，请把它当作练习伙伴而不是权威。本应用不是官方雅思词表，也不承诺提分。
+            词库内容由 AI 按规范生成并经自动校验，未逐条人工审校；AI 对话和批改也可能出错，请把它当作练习伙伴而不是权威。本应用不是官方雅思词表，也不承诺提分。AI 生成的内容都标有「AI 生成」，如遇不当内容可点每条回复下的「举报」发邮件给我们。
+          </p>
+          <MedicalNotice />
+          <p className="muted">
+            Dr. Anita 是 OiOi MedAI Academy 的英语教练形象。诊室、手术室等场景只是英语角色扮演，不提供诊断、治疗或用药建议。Dr. Anita is an English-coach persona; clinical scenes are role-play for language practice and never give diagnosis, treatment or medication advice.
+          </p>
+          <p className="muted">
+            联系 Contact：<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
           </p>
         </section>
       </div>

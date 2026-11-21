@@ -26,6 +26,7 @@ import { Palette } from "./ui/Palette";
 import { Sheet } from "./ui/Sheet";
 import { shouldShowSplash, Splash } from "./ui/Splash";
 import { Toasts } from "./ui/Toast";
+import { ConsentDialog } from "./ui/ConsentDialog";
 import { PageBoundary } from "./ui/PageBoundary";
 
 const NAV: { page: Route["page"]; label: string; icon: typeof Compass; tab?: boolean }[] = [
@@ -209,6 +210,7 @@ function Shell({ privateAvailable }: { privateAvailable: boolean }) {
       <Palette open={palette} onClose={() => setPalette(false)} />
       {!onboarded && !["about", "privacy", "settings"].includes(route.page) && !splash && <Onboarding />}
       {splash && <Splash onDone={() => setSplash(false)} />}
+      <ConsentDialog />
       <Toasts />
       <AmbienceController />
     </div>

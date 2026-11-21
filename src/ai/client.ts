@@ -1,4 +1,5 @@
 import type { AiConfig } from "./config";
+import { ensureConsent, providerName } from "./consent";
 import { extractJson } from "./json";
 import { modelInfo, modelSupportsJson, OR_FREE_ROUTER, orHeaders, rateLimitMessage } from "./openrouter";
 import { presetById } from "./providers";
@@ -12,6 +13,8 @@ export class AiError extends Error {
   constructor(
     message: string,
     public status = 0,
+    /** True when the user declined (or has not given) consent for this provider. */
+    public declined = false,
   ) {
     super(message);
   }
@@ -77,6 +80,8 @@ export function buildBody(cfg: AiConfig, messages: Message[], { json = false, ma
 
 /** One OpenAI-compatible chat completion. */
 export async function chat(cfg: AiConfig, messages: Message[], opts: { json?: boolean; signal?: AbortSignal; maxTokens?: number } = {}): Promise<string> {
+  // No text leaves the device until the user has agreed for this provider (App Store 5.1.2(i)).
+  if (!(await ensureConsent(cfg))) throw new AiError(`没有发送：你还没有同意把内容发送给 ${providerName(cfg)}。可以继续用演示模式，或重试并点「同意」。\nNot sent: you have not agreed to share text with ${providerName(cfg)}.`, 0, true);
   try {
     return await chatOnce(cfg, messages, opts);
   } catch (e) {

@@ -1,9 +1,10 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 /**
- * iOS wrapper for OiOi WordTalk.
- * Build web assets with `npm run build:ios` (relative base, media streamed from GitHub Pages),
- * then open ios/App in Xcode or let the TestFlight workflow build it.
+ * iOS app for OiOi WordTalk. The native project is committed in ios/ (Info.plist keys, privacy
+ * manifest, iPhone-only, portrait, launch screen); scripts/ios-verify.mjs checks it in CI.
+ * Build with `npm run build:ios`: the dataset and thumbnails are bundled, full illustrations and
+ * audio are fetched on demand from GitHub Pages and cached on the device.
  */
 const config: CapacitorConfig = {
   appId: "com.oioiacademy.wordtalk",
@@ -11,7 +12,7 @@ const config: CapacitorConfig = {
   webDir: "dist",
   ios: {
     contentInset: "always",
-    backgroundColor: "#0b2324",
+    backgroundColor: "#f4efe4",
     limitsNavigationsToAppBoundDomains: false,
   },
 };

@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import { warmMedia } from "../lib/media";
 import type { Atlas, Entry } from "./types";
 
 export const AtlasContext = createContext<Atlas | null>(null);
@@ -29,7 +30,12 @@ export function useEntry(id: string | null | undefined) {
       live = false;
     };
   }, [atlas, id]);
-  return { entry: entry?.id === id ? entry : undefined, error };
+  const current = entry?.id === id ? entry : undefined;
+  // iOS app: fetch and cache the open word's recordings so its play buttons work offline later.
+  useEffect(() => {
+    if (current) warmMedia([atlas.audio(current, "uk"), atlas.audio(current, "us"), atlas.audio(current, "ex"), atlas.audio(current, "ex2")], true);
+  }, [atlas, current]);
+  return { entry: current, error };
 }
 
 /** Warm the chunks for a list of ids (e.g. a learning session). */

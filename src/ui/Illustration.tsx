@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMediaUrl } from "../lib/media";
 
 const HUES = ["#C4573A", "#7F9B77", "#D9A03A", "#5F7FA3", "#A86B8C", "#4E7C76"];
 
@@ -19,12 +20,16 @@ export function Illustration({
   alt?: string;
 }) {
   const [state, setState] = useState<"loading" | "ok" | "error">("loading");
-  const showImg = src && state !== "error";
+  // Full illustrations in the iOS app are fetched on demand and cached; offline without a copy -> plate.
+  const resolved = useMediaUrl(src);
+  if (resolved === undefined)
+    return <figure className={`illo ${className}`} aria-busy="true" />;
+  const showImg = resolved && state !== "error";
   return (
     <figure className={`illo ${showImg && state === "ok" ? "is-loaded" : ""} ${className}`}>
       {showImg ? (
         <img
-          src={src}
+          src={resolved}
           alt={alt ?? ""}
           loading={eager ? "eager" : "lazy"}
           decoding="async"

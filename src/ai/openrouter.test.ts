@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { afterEach, test } from "node:test";
 import { AiError, buildBody, chat } from "./client";
 import { defaultAiConfig, sanitizeAiConfig, type AiConfig } from "./config";
+import { consent } from "./consent";
 import { FALLBACK_MODELS, fetchKeyInfo, fetchModels, formatQuota, modelSupportsJson, OR_FREE_ROUTER, parseKeyInfo, parseModels, rateLimitMessage, resetModelCache } from "./openrouter";
 import { presetById } from "./providers";
 
@@ -14,6 +15,10 @@ const payload = {
     { id: OR_FREE_ROUTER, name: "Free router", created: 1, context_length: 200000, architecture: { output_modalities: ["text"] }, pricing: { prompt: "0", completion: "0" }, supported_parameters: ["response_format"] },
   ],
 };
+
+// These tests exercise the network path, so the user has agreed for both providers.
+consent.grant("openrouter");
+consent.grant("deepseek");
 
 const realFetch = globalThis.fetch;
 afterEach(() => {

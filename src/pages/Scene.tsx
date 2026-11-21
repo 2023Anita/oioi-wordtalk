@@ -10,7 +10,7 @@ import { cue } from "../lib/sound";
 import { logReview } from "../store/session";
 import { Rating } from "../store/srs";
 import { store } from "../store/store";
-import { AiBadge, ErrorNote, StoryText, WordChips } from "../ui/ai";
+import { AiBadge, AiMeta, ErrorNote, MEDICAL_SCENARIOS, MedicalNotice, StoryText, WordChips } from "../ui/ai";
 
 const QLABEL = { comprehension: "理解", fill: "填空", contrast: "为什么是 A 不是 B" } as const;
 
@@ -91,6 +91,7 @@ export function ScenePage() {
           </button>
         </div>
         {briefs ? <WordChips words={briefs} /> : <span className="spinner" />}
+        {MEDICAL_SCENARIOS.has(scenario.id) && <MedicalNotice />}
       </section>
 
       <section className="panel wt-stage" aria-busy={loading}>
@@ -120,6 +121,7 @@ export function ScenePage() {
             </div>
             {briefs && <StoryText text={scene.story} words={briefs} />}
             {zh && <p className="wt-zh">{scene.storyZh}</p>}
+            <AiMeta text={`${scene.title}\n${scene.story}`} where={`Scene · ${scenario.en}`} demo={scene.title.endsWith("(demo)")} />
             <p className="muted wt-hint">点高亮的词，打开它的词卡和插画。</p>
           </>
         )}

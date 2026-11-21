@@ -1,8 +1,13 @@
-import { Eye, EyeOff, Gauge, KeyRound, PlugZap, RefreshCw, ShieldCheck, Trash2 } from "lucide-react";
+import { Download, Eye, EyeOff, Gauge, KeyRound, Mail, PlugZap, RefreshCw, ShieldCheck, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { cacheClear, cacheCount } from "../ai/cache";
 import { chatJSON } from "../ai/client";
+import { useAtlas } from "../atlas/context";
+import { MEDIA } from "../atlas/types";
 import { aiConfig, isDemo, useAiConfig } from "../ai/config";
+import { consent, providerName, useConsent } from "../ai/consent";
+import { CONTACT_EMAIL } from "../config";
+import { clearStoredMedia, downloadAll, formatMB, loadMediaManifest, mediaIsRemote, storedMediaCount, type MediaManifest } from "../lib/media";
 import { obj } from "../ai/json";
 import { fetchKeyInfo, fetchModels, formatQuota, type OrModel } from "../ai/openrouter";
 import { presetById, PRESETS } from "../ai/providers";
@@ -132,6 +137,10 @@ export function SettingsPage() {
         )}
       </section>
 
+      <AiConsentPanel />
+
+      {mediaIsRemote && <OfflineMediaPanel />}
+
       <section className="panel">
         <h3 className="eyebrow">生成内容缓存</h3>
         <p className="muted">生成过的故事、词网和辨析题缓存在本机 IndexedDB（{cached} 条），再次打开不重复花费额度。</p>
@@ -148,7 +157,10 @@ export function SettingsPage() {
       </section>
 
       <p className="muted wt-hint">
-        <ShieldCheck size={14} /> 你输入的英文和任务词会发给你选择的模型服务商处理，请阅读对方的隐私条款。详见 <a href="#/privacy">隐私政策</a>。
+        <ShieldCheck size={14} /> 你输入的英文和任务词会在你同意后发给你选择的模型服务商处理，请阅读对方的隐私条款。详见 <a href="#/privacy">隐私政策</a>。
+      </p>
+      <p className="muted wt-hint">
+        <Mail size={14} /> 支持与反馈 Support：<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
       </p>
     </div>
   );
@@ -196,5 +208,123 @@ function OpenRouterModels({ model }: { model: string }) {
       <input value={model} onChange={(e) => aiConfig.set({ model: e.target.value })} placeholder="或直接输入模型 ID，如 openrouter/free" spellCheck={false} autoComplete="off" aria-label="模型 ID" />
       <small className="muted">免费模型有每分钟和每天的次数上限；遇到限流会自动改用 openrouter/free 重试一次。部分免费模型的提供方可能记录输入用于训练，请勿输入隐私信息。</small>
     </div>
+  );
+}
+
+/** Which providers may receive text; withdraw consent here (App Store 5.1.2(i)). */
+function AiConsentPanel() {
+  const cfg = useAiConfig();
+  const { granted } = useConsent();
+  const entries = Object.entries(granted);
+  const name = (key: string) => (key.startsWith("custom:") ? `自定义 Custom (${key.slice(7)})` : providerName({ provider: key, baseUrl: "" }));
+  return (
+    <section className="panel">
+      <h3 className="eyebrow">AI 数据共享同意 · AI data sharing consent</h3>
+      <p className="muted">
+        第一次使用某个服务商前，应用会先询问你是否同意把练习内容发送给它；不同意就不会发送。撤回后，下次使用前会重新询问。演示模式不发送任何内容。
+        <span lang="en"> The app asks before sending anything to a provider for the first time. Withdraw consent here; you will be asked again next time. Demo mode sends nothing.</span>
+      </p>
+      {entries.length ? (
+        <ul className="consent-list">
+          {entries.map(([key, at]) => (
+            <li key={key}>
+              <span>
+                <b>{name(key)}</b>
+                <small className="muted"> · 同意于 {new Date(at).toLocaleDateString()}</small>
+              </span>
+              <button className="btn btn-ghost" onClick={() => (consent.revoke(key), toast(`已撤回对 ${name(key)} 的同意`, "ok"))}>
+                撤回 Withdraw
+              </button>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="muted">目前没有同意任何服务商。No provider has your consent.{!isDemo(cfg) && " 下次生成内容前会先询问你。"}</p>
+      )}
+    </section>
+  );
+}
+
+/**
+ * iOS app only: full illustrations and recordings load on demand and are kept on the device.
+ * Optionally fetch them all ahead of time; the size is shown and the user confirms first.
+ */
+function OfflineMediaPanel() {
+  const atlas = useAtlas();
+  const [manifest, setManifest] = useState<MediaManifest | null>(null);
+  const [stored, setStored] = useState(0);
+  const [ask, setAsk] = useState<null | "img" | "audio">(null);
+  const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+  const [ctl, setCtl] = useState<AbortController | null>(null);
+  useEffect(() => {
+    void loadMediaManifest(import.meta.env.BASE_URL.replace(/\/$/, "")).then(setManifest);
+    void storedMediaCount().then(setStored);
+  }, []);
+  const urls = (kind: "img" | "audio") =>
+    kind === "img"
+      ? atlas.words.filter((w) => w.media & MEDIA.img).map((w) => atlas.img(w, "full")!)
+      : atlas.words.flatMap((w) => (["uk", "us", "ex", "ex2"] as const).map((k) => atlas.audio(w, k)).filter((u): u is string => !!u));
+  const start = async (kind: "img" | "audio") => {
+    setAsk(null);
+    const ac = new AbortController();
+    setCtl(ac);
+    setProgress({ done: 0, total: 1 });
+    const ok = await downloadAll(urls(kind), (done, total) => setProgress({ done, total }), ac.signal);
+    setCtl(null);
+    setProgress(null);
+    setStored(await storedMediaCount());
+    toast(ac.signal.aborted ? "已停止下载，已下载的文件会保留" : `已保存 ${ok} 个文件，可离线使用`, "ok");
+  };
+  const size = (kind: "img" | "audio") => (manifest ? formatMB(manifest[kind].bytes) : "?");
+  return (
+    <section className="panel">
+      <h3 className="eyebrow">离线素材 · Offline media</h3>
+      <p className="muted">
+        词库和所有缩略图已内置在 App 里，离线可用。大图和真人录音在第一次打开时下载并保存在本机；没网又没下载过时显示文字卡片、用系统语音朗读。本机已保存 {stored.toLocaleString()} 个文件。
+      </p>
+      {progress ? (
+        <div>
+          <progress className="wt-progress" value={progress.done} max={progress.total} />
+          <p className="muted">
+            {progress.done.toLocaleString()} / {progress.total.toLocaleString()}
+            <button className="link" onClick={() => ctl?.abort()}>
+              停止
+            </button>
+          </p>
+        </div>
+      ) : ask ? (
+        <div className="wt-row">
+          <p>
+            要下载全部{ask === "img" ? "插画大图" : "单词与例句录音"}吗？约 <b>{size(ask)}</b>，建议连接 Wi-Fi。Download about {size(ask)}?
+          </p>
+          <button className="btn btn-ghost" onClick={() => setAsk(null)}>
+            取消
+          </button>
+          <button className="btn btn-primary" onClick={() => start(ask)}>
+            下载 Download
+          </button>
+        </div>
+      ) : (
+        <div className="wt-row">
+          <button className="btn btn-ghost" onClick={() => setAsk("img")}>
+            <Download size={16} /> 下载全部插画（{size("img")}）
+          </button>
+          <button className="btn btn-ghost" onClick={() => setAsk("audio")}>
+            <Download size={16} /> 下载全部录音（{size("audio")}）
+          </button>
+          <button
+            className="btn btn-ghost"
+            disabled={!stored}
+            onClick={async () => {
+              await clearStoredMedia();
+              setStored(0);
+              toast("已删除本机保存的插画和录音", "ok");
+            }}
+          >
+            <Trash2 size={16} /> 删除已下载
+          </button>
+        </div>
+      )}
+    </section>
   );
 }

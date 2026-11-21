@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { prefetch, useAtlas } from "../atlas/context";
 import type { Entry } from "../atlas/types";
 import { play, stopAudio } from "../lib/audio";
+import { warmMedia } from "../lib/media";
 import { cue } from "../lib/sound";
 import { hashSeed, shuffle } from "../lib/text";
 import { clean, correctCharacterCount, same, typingDelta, typingMetrics } from "../lib/typing";
@@ -128,6 +129,7 @@ function TypingRound({ mode, entries, onExit, onAgain }: { mode: Mode; entries: 
   useEffect(() => {
     setValue("");
     started.current = null;
+    warmMedia([atlas.audio(e, "ex"), atlas.audio(e, settings.accent)], true);
     input.current?.focus();
     if (mode === "dictation") void play(atlas.audio(e, "ex"), e.ex[0].en, settings.accent);
     if (mode === "word" && settings.autoplay) void play(atlas.audio(e, settings.accent), e.w, settings.accent);

@@ -5478,3 +5478,90 @@ h3:not(.eyebrow) {
   gap: 6px;
   margin-top: 6px;
 }
+
+/* ---------- App Store: AI labels, report, consent, medical notice, offline media ---------- */
+.wt-aimeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.9rem;
+  margin: 0.45rem 0 0;
+  font-size: 0.74rem;
+  line-height: 1.3;
+  color: var(--ink-3);
+}
+.wt-ailabel,
+.wt-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.wt-report {
+  color: inherit;
+  text-decoration: none;
+  padding: 0.25rem 0;
+  min-height: 28px;
+}
+.wt-report:hover,
+.wt-report:focus-visible {
+  color: var(--shu);
+  text-decoration: underline;
+}
+.wt-medical {
+  display: block;
+  margin: 0.6rem 0 0;
+  padding: 0.55rem 0.75rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  background: color-mix(in srgb, var(--shu) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--shu) 25%, transparent);
+}
+.wt-medical svg {
+  vertical-align: -2px;
+  margin-right: 0.2rem;
+}
+.wt-medical b {
+  font-weight: 600;
+}
+.wt-medical.is-compact {
+  font-size: 0.76rem;
+  padding: 0.4rem 0.6rem;
+}
+.consent h2 {
+  margin: 0.3rem 0 0.6rem;
+  font-size: 1.25rem;
+}
+.consent ul {
+  margin: 0.4rem 0 0.8rem;
+  padding-left: 1.2rem;
+}
+.consent .eyebrow svg {
+  vertical-align: -2px;
+}
+.consent-actions {
+  justify-content: flex-end;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.consent-actions .btn {
+  min-width: 7.5rem;
+  justify-content: center;
+}
+.consent-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+}
+.consent-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.wt-progress {
+  width: 100%;
+  height: 8px;
+  accent-color: var(--shu);
+}

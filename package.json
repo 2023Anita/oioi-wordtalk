@@ -2,7 +2,7 @@
   "name": "oioi-wordtalk",
   "version": "0.1.0",
   "type": "module",
-  "description": "OiOi WordTalk · 词聊 — illustrated IELTS vocabulary with AI scene stories, role-play chat with Dr. Anita, logic training and FSRS. Built on Word Atlas (词光).",
+  "description": "OiOi WordTalk · 词聊 — illustrated English vocabulary for exam and workplace English, with AI scene stories, role-play chat with Dr. Anita, logic training and FSRS. Built on Word Atlas (词光).",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
@@ -12,7 +12,7 @@
     "build:atlas": "python3 scripts/atlas/build_atlas.py",
     "format": "prettier --write src vite.config.ts scripts/*.mjs package.json tsconfig.json",
     "build:check": "SKIP_PUBLIC_COPY=1 npm run build",
-    "build:ios": "ATLAS_BASE=./ VITE_MEDIA_BASE=https://2023anita.github.io/oioi-wordtalk npm run build && node scripts/strip-media.mjs && npx cap sync ios"
+    "build:ios": "ATLAS_BASE=./ VITE_MEDIA_BASE=https://2023anita.github.io/oioi-wordtalk npm run build && node scripts/strip-media.mjs && npx cap sync ios && node scripts/ios-icon.mjs && node scripts/ios-verify.mjs"
   },
   "dependencies": {
     "@capacitor/core": "^8.6.2",

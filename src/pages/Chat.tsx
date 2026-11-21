@@ -9,7 +9,8 @@ import { cue } from "../lib/sound";
 import { logReview } from "../store/session";
 import { Rating } from "../store/srs";
 import { store } from "../store/store";
-import { AiBadge, ErrorNote, WordChips } from "../ui/ai";
+import { isDemo } from "../ai/config";
+import { AiBadge, AiMeta, ErrorNote, MEDICAL_SCENARIOS, MedicalNotice, WordChips } from "../ui/ai";
 import { toast } from "../ui/Toast";
 
 const AVATAR = `${import.meta.env.BASE_URL}brand/anita-avatar.webp`;
@@ -18,6 +19,8 @@ interface Msg {
   role: "user" | "assistant";
   content: string;
   turn?: ChatTurn;
+  /** Where an assistant reply came from: the model, the offline demo, or the fixed opening line. */
+  src?: "ai" | "demo";
 }
 
 type Recognition = {
@@ -110,7 +113,7 @@ export function ChatPage() {
       setMsgs((m) => {
         const copy = [...m];
         copy[copy.length - 1] = { ...copy[copy.length - 1], turn };
-        return [...copy, { role: "assistant", content: turn.reply }];
+        return [...copy, { role: "assistant", content: turn.reply, src: isDemo() ? "demo" : "ai" }];
       });
     } catch (e) {
       setError((e as Error).message);
@@ -174,6 +177,7 @@ export function ChatPage() {
         </div>
         {briefs ? <WordChips words={briefs} lit={lit} onPick={(w) => setText((t) => (t ? `${t} ${w.word}` : w.word))} /> : <span className="spinner" />}
         <p className="muted wt-hint">点词把它插入输入框；用对一个词就点亮一颗星，并记一次 FSRS 复习（来源：对话）。</p>
+        <MedicalNotice compact={!MEDICAL_SCENARIOS.has(scenario.id)} />
       </section>
 
       <section className="panel wt-thread" aria-live="polite">
@@ -182,6 +186,7 @@ export function ChatPage() {
             {m.role === "assistant" && <img className="wt-avatar" src={AVATAR} alt="" aria-hidden="true" width={32} height={32} />}
             <div className="wt-bubble">
               <p lang="en">{m.content}</p>
+              {m.role === "assistant" && m.src && <AiMeta text={m.content} where={`Chat · ${scenario.en}`} demo={m.src === "demo"} />}
               {m.turn && (
                 <div className={`wt-feedback ${m.turn.feedback.ok ? "is-ok" : "is-fix"}`}>
                   {m.turn.feedback.note && (

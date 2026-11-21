@@ -1,6 +1,7 @@
 import { Volume2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { play } from "../lib/audio";
+import { warmMedia } from "../lib/media";
 
 export function Speak({
   url,
@@ -22,6 +23,8 @@ export function Speak({
   kbd?: string;
 }) {
   const [on, setOn] = useState(false);
+  // Look up an on-device copy ahead of the tap (no network), so it can play offline.
+  useEffect(() => warmMedia([url]), [url]);
   // Must stay synchronous up to play(): iOS only allows audio/speech started inside the tap.
   const run = (e: React.MouseEvent) => {
     e.stopPropagation();

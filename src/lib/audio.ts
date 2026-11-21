@@ -1,3 +1,4 @@
+import { mediaForTap } from "./media";
 import { duck } from "./sound";
 
 /**
@@ -139,6 +140,8 @@ export function play(url: string | null | undefined, text: string, accent: Accen
   playbackSession();
   const mine = ++token;
   const id = ++plays;
+  // iOS app: use the on-device copy when there is one; offline with no copy -> device voice.
+  url = mediaForTap(url);
   let out: Promise<PlayResult>;
   if (url && typeof Audio !== "undefined") {
     unlockSpeech();

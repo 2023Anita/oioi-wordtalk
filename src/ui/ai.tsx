@@ -1,7 +1,8 @@
-import { Cpu, Settings2, Star } from "lucide-react";
+import { Cpu, Flag, Settings2, Sparkles, Stethoscope, Star } from "lucide-react";
 import { useAtlas } from "../atlas/context";
 import { isDemo, useAiConfig } from "../ai/config";
 import { presetById } from "../ai/providers";
+import { CONTACT_EMAIL } from "../config";
 import type { WordBrief } from "../ai/tasks";
 import { headwordPattern } from "../lib/text";
 import { openWord } from "../lib/router";
@@ -92,5 +93,54 @@ export function ErrorNote({ error, onRetry }: { error: string; onRetry?: () => v
         </a>
       </div>
     </div>
+  );
+}
+
+/** mailto link for reporting one piece of AI output (subject + the text, provider and model). */
+export function reportHref(text: string, where: string, cfg = { provider: "demo", model: "" }) {
+  const subject = `[OiOi WordTalk] 举报 AI 内容 / Report AI content (${where})`;
+  const body = [
+    "请简单说明问题（不当、冒犯、有害或错误）/ What is wrong with this response?",
+    "",
+    "",
+    "---",
+    `Where: ${where}`,
+    `Provider: ${cfg.provider} · Model: ${cfg.model}`,
+    `Time: ${new Date().toISOString()}`,
+    "Content:",
+    text.slice(0, 1500),
+  ].join("\n");
+  return `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
+
+/**
+ * Label + report control under every piece of generated text (App Store 1.2 / 4.7).
+ * Demo output is labelled as such; real model output as AI-generated.
+ */
+export function AiMeta({ text, where, demo }: { text: string; where: string; demo?: boolean }) {
+  const cfg = useAiConfig();
+  const isDemoOut = demo ?? isDemo(cfg);
+  return (
+    <p className="wt-aimeta">
+      <span className="wt-ailabel">
+        <Sparkles size={12} /> {isDemoOut ? "演示内容 · Demo" : "AI 生成 · AI-generated"}
+      </span>
+      <a className="wt-report" href={reportHref(text, where, cfg)} title="举报不当内容 / Report this response">
+        <Flag size={12} /> 举报 Report
+      </a>
+    </p>
+  );
+}
+
+/** Scenarios that are medical role-plays. */
+export const MEDICAL_SCENARIOS = new Set(["doctor", "hospital-or"]);
+
+/** Shown on medical role-plays and wherever Dr. Anita's clinical persona appears (App Store 1.4.1). */
+export function MedicalNotice({ compact = false }: { compact?: boolean }) {
+  return (
+    <p className={`wt-medical ${compact ? "is-compact" : ""}`} role="note">
+      <Stethoscope size={14} /> <b>仅供语言练习，非医疗建议 · Language practice only, not medical advice</b>
+      {!compact && <span className="muted"> 对话中的医疗情节均为虚构的英语练习，如有健康问题请咨询医生。Medical scenes are fictional English practice; ask a doctor about your health.</span>}
+    </p>
   );
 }

@@ -19,3 +19,25 @@ jobs:
       - run: npm test
       - run: npm run check:atlas
       - run: npm run build:check
+  ios-bundle:
+    # The iOS app bundle without signing (no Apple account needed): web build for the app,
+    # strip full media, `cap sync ios`, then check Info.plist keys, privacy manifest and bundle size.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Build web assets for iOS
+        run: ATLAS_BASE=./ VITE_MEDIA_BASE=https://2023anita.github.io/oioi-wordtalk npm run build
+      - run: node scripts/strip-media.mjs
+      - run: npx cap sync ios
+      - run: node scripts/ios-icon.mjs
+      - run: node scripts/ios-verify.mjs
+      - name: App bundle size (must stay well under 200 MB)
+        run: |
+          bytes=$(du -sb ios/App/App/public | cut -f1)
+          echo "ios/App/App/public is $((bytes/1024/1024)) MB"
+          if [ "$bytes" -gt 150000000 ]; then echo "::error::iOS web bundle exceeds 150 MB"; exit 1; fi

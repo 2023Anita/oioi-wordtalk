@@ -3,7 +3,11 @@ import { MEDIA } from "./types";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 const url = (p: string) => `${BASE}/atlas/${p}`;
-/** Illustrations and audio can be streamed from another host (the iOS build uses GitHub Pages). */
+/**
+ * Full illustrations and audio can come from another host: the iOS build bundles the dataset
+ * and thumbnails, and fetches full images and recordings on demand from GitHub Pages
+ * (cached on the device, see lib/media.ts). Thumbnails are always served with the app.
+ */
 const MEDIA_BASE = ((import.meta.env.VITE_MEDIA_BASE as string | undefined) || BASE).replace(/\/$/, "");
 const media = (p: string) => `${MEDIA_BASE}/atlas/${p}`;
 
@@ -79,7 +83,9 @@ export async function loadOpenAtlas(): Promise<Atlas> {
     },
     img: (ref, size = "full") =>
       ("media" in ref && typeof ref.media === "number" ? ref.media : (ref as Entry).m) & MEDIA.img
-        ? media(`${size === "thumb" ? "thumb" : "img"}/${ref.id}.webp`)
+        ? size === "thumb"
+          ? url(`thumb/${ref.id}.webp`)
+          : media(`img/${ref.id}.webp`)
         : null,
     audio(ref, kind) {
       const m = "media" in ref && typeof ref.media === "number" ? ref.media : (ref as Entry).m;
