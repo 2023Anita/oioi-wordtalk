@@ -1,0 +1,8 @@
+# Optional: fastlane match keeps signing certificates in a PRIVATE git repo you own.
+# Only used when the MATCH_GIT_URL secret is set; otherwise the Fastfile falls back to
+# Xcode automatic signing with the App Store Connect API key.
+git_url(ENV["MATCH_GIT_URL"])
+storage_mode("git")
+type("appstore")
+app_identifier(["com.oioiacademy.wordtalk"])
+readonly(true)

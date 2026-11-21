@@ -1,0 +1,46 @@
+{
+  "name": "oioi-wordtalk",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OiOi WordTalk · 词聊 — illustrated IELTS vocabulary with AI scene stories, role-play chat with Dr. Anita, logic training and FSRS. Built on Word Atlas (词光).",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "test": "node --import tsx --test src/**/*.test.ts",
+    "check:atlas": "node scripts/check-atlas.mjs",
+    "build:atlas": "python3 scripts/atlas/build_atlas.py",
+    "format": "prettier --write src vite.config.ts scripts/*.mjs package.json tsconfig.json",
+    "build:check": "SKIP_PUBLIC_COPY=1 npm run build",
+    "build:ios": "ATLAS_BASE=./ VITE_MEDIA_BASE=https://2023anita.github.io/oioi-wordtalk npm run build && node scripts/strip-media.mjs && npx cap sync ios"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.6.2",
+    "@capacitor/ios": "^8.6.2",
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "ts-fsrs": "^5.4.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.6.2",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "playwright": "^1.64.1",
+    "prettier": "^3.9.10",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9.3",
+    "vite": "^6.4.1"
+  },
+  "private": true,
+  "license": "MIT",
+  "author": "Lixin Yin (OiOi MedAI Academy)",
+  "homepage": "https://2023anita.github.io/oioi-wordtalk/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/2023Anita/oioi-wordtalk.git"
+  }
+}

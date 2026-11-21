@@ -1,0 +1,55 @@
+name: iOS → TestFlight
+# Manual trigger only. Stays inert until you:
+#   1) add repository secrets ASC_KEY_ID, ASC_ISSUER_ID, ASC_KEY_P8 (and optionally MATCH_* for match signing), and
+#   2) set repository variable IOS_RELEASE_ENABLED = true.
+# See docs/IOS_RELEASE.md.
+on:
+  workflow_dispatch:
+    inputs:
+      changelog:
+        description: "What to test (shown to TestFlight testers)"
+        required: false
+        default: "OiOi WordTalk beta"
+permissions:
+  contents: read
+jobs:
+  testflight:
+    if: ${{ vars.IOS_RELEASE_ENABLED == 'true' }}
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      CHANGELOG: ${{ github.event.inputs.changelog }}
+    steps:
+      - name: Require App Store Connect API key secrets
+        run: |
+          if [ -z "$ASC_KEY_ID" ] || [ -z "$ASC_ISSUER_ID" ] || [ -z "$ASC_KEY_P8" ]; then
+            echo "::error::Missing ASC_KEY_ID / ASC_ISSUER_ID / ASC_KEY_P8 secrets. See docs/IOS_RELEASE.md"; exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.3"
+          bundler-cache: true
+      - run: npm ci
+      - name: Build web assets for iOS (media streamed from GitHub Pages)
+        run: |
+          ATLAS_BASE=./ VITE_MEDIA_BASE=https://2023anita.github.io/oioi-wordtalk npm run build
+          node scripts/strip-media.mjs
+      - name: Create / sync the Capacitor iOS project
+        run: |
+          [ -d ios ] || npx cap add ios
+          npx cap sync ios
+          node scripts/ios-icon.mjs
+      - name: Fastlane beta
+        run: bundle exec fastlane ios beta

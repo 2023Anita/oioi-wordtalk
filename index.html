@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#0b2324" />
+    <title>OiOi WordTalk · 词聊 — 背单词，也聊单词</title>
+    <meta name="description" content="7,298 个雅思词，每词一幅插画；AI 场景故事、和 Dr. Anita 角色对话、逻辑训练与 FSRS 记忆。免费开源，本地优先，自带模型 Key。By Lixin Yin · OiOi MedAI Academy." />
+    <meta name="author" content="Lixin Yin · OiOi MedAI Academy" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="OiOi WordTalk · 词聊" />
+    <meta property="og:description" content="背单词，也聊单词：插画词卡 + AI 场景剧场 + 和 Dr. Anita 边学边聊。" />
+    <meta property="og:image" content="https://2023anita.github.io/oioi-wordtalk/icon-512.png" />
+    <meta name="twitter:card" content="summary" />
+    <!-- iOS add-to-home-screen -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="词聊" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
+    <link rel="apple-touch-icon" href="%BASE_URL%apple-touch-icon.png" />
+    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
+    <link rel="preload" href="%BASE_URL%atlas/index.json" as="fetch" crossorigin="anonymous" />
+    <script>
+      // Apply the saved theme (dark by default) before first paint.
+      (function () {
+        var t = "dark";
+        try {
+          var s = JSON.parse(localStorage.getItem("oioi-wordtalk:settings") || "{}");
+          if (s.theme) t = s.theme;
+        } catch (e) {}
+        if (t !== "system") document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

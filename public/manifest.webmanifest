@@ -1,0 +1,19 @@
+{
+  "name": "OiOi WordTalk · 词聊",
+  "short_name": "词聊",
+  "description": "背单词，也聊单词 — 插画词卡、AI 场景剧场、和 Dr. Anita 边学边聊。",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "zh-CN",
+  "background_color": "#0b2324",
+  "theme_color": "#0b2324",
+  "categories": ["education"],
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

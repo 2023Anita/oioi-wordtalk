@@ -1,0 +1,4 @@
+# App Store Connect app identity. Change app_identifier if you pick another bundle id.
+app_identifier("com.oioiacademy.wordtalk")
+# Your Apple Developer Team ID (10 characters), from developer.apple.com → Membership.
+team_id(ENV["APPLE_TEAM_ID"]) if ENV["APPLE_TEAM_ID"].to_s != ""
