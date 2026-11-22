@@ -30,7 +30,8 @@ h1{margin-top:12px;font-weight:640;font-size:${f.size || 31}px;line-height:1.08;
 <div class="shot"><img src="${pathToFileURL(path.join(RAW, f.raw + ".png")).href}"></div></body></html>`;
 const b = await chromium.launch();
 const p = await b.newPage({ viewport: { width: 440, height: 956 }, deviceScaleFactor: 3 });
-for (const f of FRAMES) {
+const ONLY = process.argv.slice(2); // optional: raw names to (re)compose, e.g. 03-scene 04-chat
+for (const f of FRAMES.filter((f) => !ONLY.length || ONLY.includes(f.raw))) {
   const file = path.join(RAW, "_frame.html");
   writeFileSync(file, html(f));
   await p.goto(pathToFileURL(file).href);
