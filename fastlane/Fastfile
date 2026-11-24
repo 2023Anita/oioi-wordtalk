@@ -5,6 +5,7 @@ default_platform(:ios)
 PROJECT = "ios/App/App.xcodeproj"
 SCHEME = "App"
 BUNDLE_ID = "com.oioiacademy.wordtalk"
+PROFILE_NAME = "OiOi WordTalk AppStore"
 
 platform :ios do
   desc "Build the Capacitor app and upload it to TestFlight"
@@ -20,6 +21,30 @@ platform :ios do
     )
 
     use_match = ENV["MATCH_GIT_URL"].to_s != ""
+    use_manual = !use_match && ENV["IOS_DIST_P12"].to_s != "" && ENV["IOS_APPSTORE_PROFILE"].to_s != ""
+    if use_manual
+      # Distribution certificate + App Store profile stored as repo secrets (no device needed).
+      p12_path = File.expand_path("../dist.p12", __dir__)
+      File.binwrite(p12_path, Base64.decode64(ENV["IOS_DIST_P12"]))
+      import_certificate(
+        certificate_path: p12_path,
+        certificate_password: ENV["IOS_DIST_P12_PASSWORD"].to_s,
+        keychain_name: "fastlane_tmp_keychain",
+        keychain_password: ""
+      )
+      profile_path = File.expand_path("../appstore.mobileprovision", __dir__)
+      File.binwrite(profile_path, Base64.decode64(ENV["IOS_APPSTORE_PROFILE"]))
+      install_provisioning_profile(path: profile_path)
+      update_code_signing_settings(
+        use_automatic_signing: false,
+        path: PROJECT,
+        targets: ["App"],
+        team_id: ENV["APPLE_TEAM_ID"],
+        bundle_identifier: BUNDLE_ID,
+        profile_name: PROFILE_NAME,
+        code_sign_identity: "Apple Distribution"
+      )
+    end
     if use_match
       match(type: "appstore", readonly: true, api_key: api_key)
       update_code_signing_settings(
@@ -46,8 +71,9 @@ platform :ios do
       scheme: SCHEME,
       export_method: "app-store",
       clean: true,
-      xcargs: (use_match ? "" : "-allowProvisioningUpdates -authenticationKeyPath #{key_path} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}") + team_arg,
-      export_xcargs: use_match ? nil : "-allowProvisioningUpdates -authenticationKeyPath #{key_path} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}"
+      export_options: use_manual ? { method: "app-store", signingStyle: "manual", provisioningProfiles: { BUNDLE_ID => PROFILE_NAME } } : nil,
+      xcargs: ((use_match || use_manual) ? "" : "-allowProvisioningUpdates -authenticationKeyPath #{key_path} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}") + team_arg,
+      export_xcargs: (use_match || use_manual) ? nil : "-allowProvisioningUpdates -authenticationKeyPath #{key_path} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}"
     )
 
     upload_to_testflight(
@@ -57,5 +83,6 @@ platform :ios do
     )
   ensure
     File.delete(key_path) if key_path && File.exist?(key_path)
+    [p12_path, profile_path].each { |f| File.delete(f) if f && File.exist?(f) }
   end
 end
