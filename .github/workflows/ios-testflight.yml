@@ -4,6 +4,8 @@ name: iOS → TestFlight
 #   2) set repository variable IOS_RELEASE_ENABLED = true.
 # See docs/IOS_RELEASE.md.
 on:
+  push:
+    tags: ['ios-v*']
   workflow_dispatch:
     inputs:
       changelog:
@@ -25,7 +27,7 @@ jobs:
       MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
       MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-      CHANGELOG: ${{ github.event.inputs.changelog }}
+      CHANGELOG: ${{ github.event.inputs.changelog || 'OiOi WordTalk beta' }}
     steps:
       - name: Require App Store Connect API key secrets
         run: |
